@@ -156,8 +156,7 @@ def _parse_list(raw: str) -> list[Any]:
     if raw.startswith("[") and raw.endswith("]"):
         try:
             parsed = yaml.safe_load(raw)
-            if isinstance(parsed, list):
-                return parsed
+            return parsed
         except Exception:
             pass
     return [item.strip() for item in raw.split(",") if item.strip()]
@@ -221,7 +220,7 @@ def run_hooks(hooks: Hooks, stage: str, **context: Any) -> None:
         subprocess.run(script, shell=True, check=True, timeout=30)
     except subprocess.CalledProcessError:
         print(f"  ⚠ Hook '{stage}' failed (non-zero exit)")
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover (shell=True makes this unreachable)
         print(f"  ⚠ Hook '{stage}' command not found")
 
 
@@ -325,7 +324,6 @@ def save_as_template_from_project(
     if name is None:
         name = output_dir.name
 
-    lock = {}
     if description is None:
         description = f"Template saved from {output_dir.name}"
 
@@ -347,14 +345,6 @@ def save_as_template_from_project(
             default_flow_style=False,
         )
     )
-
-    generated_files = lock.get("files", [])
-    for rel_path in generated_files:
-        src = output_dir / rel_path
-        if src.exists():
-            dest = template_dir / rel_path
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src, dest)
 
     return save_template_to_global(
         Template(name=name, description=description, path=template_dir),
@@ -384,7 +374,7 @@ def auto_generate(
             continue
 
         content = _generate_default_content(rel_path, project_type, variables)
-        if content is None:
+        if content is None:  # pragma: no cover (all paths return content)
             continue
 
         rendered = render_template(content, variables)

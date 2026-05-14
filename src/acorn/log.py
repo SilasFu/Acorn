@@ -24,13 +24,13 @@ _current_level = LogLevel.INFO
 
 def set_level(level: str | LogLevel) -> None:
     global _current_level
-    if isinstance(level, str):
+    if isinstance(level, LogLevel):
+        _current_level = level
+    else:
         try:
             _current_level = LogLevel(level.upper())
         except ValueError:
             _current_level = LogLevel.INFO
-    else:
-        _current_level = level
 
 
 def get_level() -> LogLevel:

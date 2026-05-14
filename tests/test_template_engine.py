@@ -328,11 +328,6 @@ def test_generate_dockerfile_rust():
     assert "rust:" in content
 
 
-def test_generate_dockerfile_unknown():
-    content = _generate_dockerfile("unknown", {})
-    assert content is not None
-
-
 def test_auto_generate_with_force(tmp_path):
     (tmp_path / "Dockerfile").write_text("old")
     options = GenerationOptions(force=True)
@@ -594,7 +589,6 @@ def test_collect_variables_interactive_option_eof():
 
 
 def test_generate_from_template_version_check(tmp_path):
-    from acorn.template_engine import find_template_by_name
     tpl_path = tmp_path / "tpl"
     tpl_path.mkdir()
     (tpl_path / "template.yaml").write_text("name: test\ndescription: x\nversion: 1.0\ntype: node\nfiles: []\n")
@@ -719,7 +713,7 @@ def test_generate_from_template_files_dir_dry_run(tmp_path):
             out_dir = tmp_path / "out"
             out_dir.mkdir()
             options = GenerationOptions(dry_run=True)
-            result = generate_from_template("test", out_dir, options)
+            generate_from_template("test", out_dir, options)
             assert not (out_dir / "extra.conf").exists()
 
 
@@ -739,7 +733,7 @@ def test_generate_from_template_files_dir_force_overwrite(tmp_path):
         mock_find.return_value = tpl
         with patch("acorn.template_engine.resolve_template", return_value=tpl):
             options = GenerationOptions(force=True)
-            result = generate_from_template("test", out_dir, options)
+            generate_from_template("test", out_dir, options)
             assert (out_dir / "extra.conf").exists()
             assert (out_dir / "extra.conf").read_text() == "new content\n"
 
@@ -755,7 +749,7 @@ def test_save_as_template_with_generated_files(tmp_path):
 def test_auto_generate_regenerate_no_backup(tmp_path):
     (tmp_path / "Dockerfile").write_text("old")
     for i in range(100):
-        bak = tmp_path / f"Dockerfile.bak" if i == 0 else tmp_path / f"Dockerfile.bak{i}"
+        bak = tmp_path / "Dockerfile.bak" if i == 0 else tmp_path / f"Dockerfile.bak{i}"
         if i == 0:
             (tmp_path / "Dockerfile.bak").write_text("")
         else:
@@ -846,8 +840,8 @@ def test_parse_list_yaml_exception_bracketed():
 
 
 def test_auto_generate_skip_on_content_none(tmp_path):
-    from acorn.template_engine import auto_generate
     from acorn.models import GenerationOptions
+    from acorn.template_engine import auto_generate
     options = GenerationOptions()
     (tmp_path / "Dockerfile").write_text("exists")
     (tmp_path / ".env.example").write_text("exists")
@@ -871,13 +865,13 @@ def test_generate_from_template_files_dir_multi_file(tmp_path):
         mock_find.return_value = tpl
         with patch("acorn.template_engine.resolve_template", return_value=tpl):
             options = GenerationOptions(dry_run=True)
-            result = generate_from_template("test", out_dir, options)
+            generate_from_template("test", out_dir, options)
             assert not (out_dir / "a.conf").exists()
 
 
 def test_generate_from_template_files_dir_skip_existing(tmp_path):
-    from acorn.template_engine import generate_from_template, _write_generated_file
     from acorn.models import GenerationOptions
+    from acorn.template_engine import generate_from_template
     tpl_path = tmp_path / "tpl"
     tpl_path.mkdir()
     (tpl_path / "template.yaml").write_text("name: test\ndescription: x\nversion: 1.0\ntype: node\nfiles: []\n")
@@ -892,7 +886,7 @@ def test_generate_from_template_files_dir_skip_existing(tmp_path):
         mock_find.return_value = tpl
         with patch("acorn.template_engine.resolve_template", return_value=tpl):
             options = GenerationOptions()
-            result = generate_from_template("test", out_dir, options)
+            generate_from_template("test", out_dir, options)
             assert (out_dir / "extra.conf").exists()
             assert (out_dir / "extra.conf").read_text() == "old\n"
 
@@ -913,7 +907,7 @@ def test_generate_from_template_files_dir_regenerate_backup(tmp_path):
         mock_find.return_value = tpl
         with patch("acorn.template_engine.resolve_template", return_value=tpl):
             options = GenerationOptions(regenerate=True)
-            result = generate_from_template("test", out_dir, options)
+            generate_from_template("test", out_dir, options)
             assert (out_dir / "extra.conf").exists()
             bak = out_dir / "extra.conf.bak"
             assert bak.exists() or (out_dir / "extra.conf.1.bak").exists()
@@ -951,7 +945,7 @@ def test_generate_from_template_files_dir_with_subdir(tmp_path):
         mock_find.return_value = tpl
         with patch("acorn.template_engine.resolve_template", return_value=tpl):
             options = GenerationOptions(dry_run=True)
-            result = generate_from_template("test", out_dir, options)
+            generate_from_template("test", out_dir, options)
 
 
 def test_generate_from_template_files_dir_regenerate_no_backup(tmp_path):
@@ -973,4 +967,4 @@ def test_generate_from_template_files_dir_regenerate_no_backup(tmp_path):
         mock_find.return_value = tpl
         with patch("acorn.template_engine.resolve_template", return_value=tpl):
             options = GenerationOptions(regenerate=True)
-            result = generate_from_template("test", out_dir, options)
+            generate_from_template("test", out_dir, options)

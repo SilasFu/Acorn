@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import shutil
 import sys
 from pathlib import Path
@@ -414,6 +413,7 @@ def test_main_interactive_no_match_auto(tmp_path):
     src = tmp_path / "project"
     src.mkdir(parents=True)
     (src / "random.txt").write_text("data")
+    (src / "another.txt").write_text("more data")
     with patch.object(sys, "argv", ["acorn", "--dir", str(src), "--interactive"]):
         with patch("builtins.input", return_value="a"):
             rc = main()
@@ -795,17 +795,6 @@ def test_main_interactive_no_match_digit_select(tmp_path):
     assert rc == 0
 
 
-def test_main_interactive_no_match_auto(tmp_path):
-    src = tmp_path / "project"
-    src.mkdir()
-    (src / "random.txt").write_text("data")
-    (src / "another.txt").write_text("more data")
-    with patch.object(sys, "argv", ["acorn", "--dir", str(src), "--interactive"]):
-        with patch("builtins.input", return_value="a"):
-            rc = main()
-    assert rc == 0
-
-
 def test_main_interactive_reject_then_out_of_range_digit(tmp_path):
     src = tmp_path / "project"
     shutil.copytree(str(FIXTURES / "python-project"), str(src))
@@ -844,4 +833,13 @@ def test_main_module_entry():
     with patch.object(sys, "argv", ["acorn", "--help"]):
         with pytest.raises(SystemExit) as exc:
             exec(compile(code, str(main_file), "exec"), {"__name__": "__main__"})
+    assert exc.value.code == 0
+
+
+def test_cli_main_guard():
+    cli_file = Path(__file__).resolve().parent.parent / "src" / "acorn" / "cli.py"
+    code = cli_file.read_text()
+    with patch.object(sys, "argv", ["acorn", "--help"]):
+        with pytest.raises(SystemExit) as exc:
+            exec(compile(code, str(cli_file), "exec"), {"__name__": "__main__"})
     assert exc.value.code == 0

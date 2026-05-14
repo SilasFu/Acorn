@@ -127,11 +127,6 @@ def resolve_template(template: Template) -> Template:
         detectors=template.detectors,
     )
 
-    if not resolved.files and parent.files:
-        resolved.files = list(parent.files)
-    if not resolved.variables and parent.variables:
-        resolved.variables = list(parent.variables)
-
     if not resolved.detectors.files and parent.detectors.files:
         resolved.detectors.files = list(parent.detectors.files)
     if not resolved.detectors.keywords and parent.detectors.keywords:

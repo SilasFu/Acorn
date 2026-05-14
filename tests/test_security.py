@@ -223,7 +223,6 @@ def test_scan_file_for_dangerous_chmod_recursive(tmp_path):
 def test_scan_file_for_dangerous_oserror(tmp_path):
     f = tmp_path / "locked"
     f.write_text("safe")
-    import stat
     f.chmod(0o000)
     findings = scan_file_for_dangerous(f)
     assert len(findings) == 0
@@ -233,7 +232,6 @@ def test_scan_file_for_dangerous_oserror(tmp_path):
 def test_check_sensitive_info_oserror(tmp_path):
     f = tmp_path / "locked"
     f.write_text("PASSWORD=x")
-    import stat
     f.chmod(0o000)
     findings = check_sensitive_info(f)
     assert len(findings) == 0

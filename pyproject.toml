@@ -34,10 +34,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/acorn-project/acorn"
-Repository = "https://github.com/acorn-project/acorn"
-Documentation = "https://github.com/acorn-project/acorn"
-Issues = "https://github.com/acorn-project/acorn/issues"
+Homepage = "https://github.com/SilasFu/Acorn"
+Repository = "https://github.com/SilasFu/Acorn"
+Documentation = "https://github.com/SilasFu/Acorn"
+Issues = "https://github.com/SilasFu/Acorn/issues"
 
 [project.scripts]
 acorn = "acorn.cli:main"
@@ -56,7 +56,6 @@ include = [
     "src/acorn/**",
     "tests/**",
     "README.md",
-    "DESIGN.md",
     "pyproject.toml",
 ]
 

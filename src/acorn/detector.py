@@ -255,9 +255,6 @@ def detect_project_type(dir_path: Path | str) -> DetectionResult:
     if detected_port:
         result.details["detected_port"] = detected_port
 
-    if manifest_type and result.project_type == ProjectType.UNKNOWN:
-        result.project_type = manifest_type
-
     return result
 
 

@@ -238,7 +238,6 @@ def test_detection_result_has_entry_files(tmp_path: Path):
 def test_read_file_safe_oserror(tmp_path: Path):
     f = tmp_path / "locked.txt"
     f.write_text("data")
-    import stat
     f.chmod(0o000)
     content = _read_file_safe(f)
     assert content is None
