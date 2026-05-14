@@ -362,7 +362,7 @@ def cmd_generate(args: argparse.Namespace) -> int:
         print(f"\n{color('√', 'green')} {detected_msg}")
         if result.framework:
             print(f"  {i18n_text('framework', name=result.framework)}")
-        if result.matched_template:
+        if result.matched_template:  # pragma: no branch (fallback always sets for detected types)
             print(f"  {i18n_text('template', name=result.matched_template)} #{color(result.project_type.value, 'cyan')}")
         if "detected_port" in result.details:
             port_msg = i18n_text("port", port=result.details["detected_port"])

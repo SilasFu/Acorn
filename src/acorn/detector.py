@@ -232,6 +232,20 @@ def detect_project_type(dir_path: Path | str) -> DetectionResult:
             result.matched_template = template.name
             result.confidence = score
 
+    if result.matched_template is None and result.project_type != ProjectType.UNKNOWN:
+        best_tpl_score = 0.0
+        best_tpl_name: str | None = None
+        for template in templates:
+            resolved = resolve_template(template)
+            if resolved.project_type != result.project_type.value:
+                continue
+            score = evaluate_template_match(resolved, dir_path)
+            if score > best_tpl_score:
+                best_tpl_score = score
+                best_tpl_name = template.name
+        if best_tpl_name is not None:
+            result.matched_template = best_tpl_name
+
     entry_files = _find_entry_files(dir_path)
     for entry_name, etype in entry_files:
         if etype not in [m[0] for m in all_matches]:

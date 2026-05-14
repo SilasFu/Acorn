@@ -1,0 +1,26 @@
+name: rust-app
+description: Rust 应用模板
+version: 1.0.0
+type: rust
+
+detectors:
+  files:
+    - Cargo.toml
+  keywords:
+    - axum
+    - actix-web
+    - rocket
+    - tokio
+
+variables:
+  - name: port
+    default: "8080"
+    prompt: "应用端口 / Application port"
+  - name: rust_version
+    default: "1.77"
+    prompt: "Rust 版本 / Rust version"
+
+files:
+  - Dockerfile
+  - docker-compose.yml
+  - .env.example

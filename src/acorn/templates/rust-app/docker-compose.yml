@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    ports:
+      - "{{port}}:{{port}}"
+    volumes:
+      - .:/app
+      - /app/target
+    environment:
+      - RUST_LOG=debug

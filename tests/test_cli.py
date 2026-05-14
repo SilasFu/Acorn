@@ -691,6 +691,16 @@ def test_main_no_match_noninteractive(tmp_path):
     assert rc == 2
 
 
+def test_main_no_match_noninteractive_nonempty(tmp_path):
+    src = tmp_path / "project"
+    src.mkdir()
+    (src / "unknown.file").write_text("data")
+    (src / "unknown2.file").write_text("more")
+    with patch.object(sys, "argv", ["acorn", "--dir", str(src)]):
+        rc = main()
+    assert rc == 2
+
+
 def test_main_check_update_available():
     mock_result = {"current": "0.1.0", "latest": "99.99.99", "upgrade_available": True, "url": "https://pypi.org/project/acorn/"}
     with patch("acorn.cli.check_pypi_version", return_value=mock_result):
@@ -770,7 +780,7 @@ def test_main_detected_no_matched_template(tmp_path):
     (src / "src" / "main.rs").write_text("fn main() {}")
     with patch.object(sys, "argv", ["acorn", "--dir", str(src)]):
         rc = main()
-    assert rc == 2
+    assert rc == 0
 
 
 def test_main_interactive_confirm_reject_eof(tmp_path):
