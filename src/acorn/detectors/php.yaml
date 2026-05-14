@@ -1,0 +1,19 @@
+name: php-project
+type: php
+priority: 10
+
+conditions:
+  files:
+    - composer.json
+    - composer.lock
+    - artisan
+  content:
+    - laravel/framework
+    - symfony
+    - <?php
+  patterns:
+    - "*.php"
+
+indicators:
+  laravel: laravel/framework in composer.json
+  symfony: symfony/framework-bundle in composer.json

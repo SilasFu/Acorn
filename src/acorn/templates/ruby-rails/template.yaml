@@ -1,0 +1,35 @@
+name: ruby-rails
+description: Ruby on Rails 项目模板
+version: 1.0.0
+type: ruby
+min_tool_version: "0.1.0"
+
+detectors:
+  files:
+    - Gemfile
+    - config.ru
+  keywords:
+    - rails
+    - rails/
+    - ActiveRecord
+
+variables:
+  - name: port
+    default: "3000"
+    prompt: "应用端口"
+  - name: ruby_version
+    default: "3.3"
+    prompt: "Ruby 版本"
+  - name: database
+    default: "postgresql"
+    prompt: "数据库"
+    options:
+      - postgresql
+      - mysql
+      - sqlite
+
+files:
+  - Dockerfile
+  - docker-compose.yml
+  - .env.example
+  - .gitignore

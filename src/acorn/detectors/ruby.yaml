@@ -1,0 +1,22 @@
+name: ruby-project
+type: ruby
+priority: 10
+
+conditions:
+  files:
+    - Gemfile
+    - Gemfile.lock
+    - Rakefile
+    - config.ru
+  content:
+    - rails
+    - sinatra
+    - rack
+    - ruby
+  patterns:
+    - "*.rb"
+    - "*.erb"
+
+indicators:
+  rails: rails in Gemfile
+  sinatra: sinatra in Gemfile

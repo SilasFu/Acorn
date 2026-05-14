@@ -1,0 +1,33 @@
+name: java-spring
+description: Java Spring Boot 项目模板
+version: 1.0.0
+type: java
+min_tool_version: "0.1.0"
+
+detectors:
+  files:
+    - pom.xml
+    - build.gradle
+  keywords:
+    - spring-boot
+    - spring-boot-starter-web
+
+variables:
+  - name: port
+    default: "8080"
+    prompt: "应用端口"
+  - name: java_version
+    default: "21"
+    prompt: "Java 版本"
+  - name: build_tool
+    default: "maven"
+    prompt: "构建工具"
+    options:
+      - maven
+      - gradle
+
+files:
+  - Dockerfile
+  - docker-compose.yml
+  - .env.example
+  - .gitignore

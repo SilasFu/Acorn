@@ -1,0 +1,38 @@
+messages:
+  detecting: "Scanning project in {{path}}..."
+  detected: "Detected: {{type}} (confidence: {{confidence}})"
+  framework: "Framework: {{name}}"
+  template: "Template: {{name}}"
+  port: "Port: {{port}}"
+  not_detected: "Could not detect project type"
+  no_match: "No matching template. Use --template to specify one, or --interactive for selection."
+  using_template: "Using template: {{name}} ({{description}})"
+  generated: "Generated {{count}} file(s)"
+  dry_run: "Dry run {{count}} file(s)"
+  skipped: "Skipped {{path}} (already exists)"
+  forced: "Generated {{path}}"
+  backed_up: "Backed up {{path}} -> {{bak}}"
+  warning_exists: "already exists, use --force to overwrite"
+
+errors:
+  not_found: "Not found: {{name}}"
+  permission_denied: "Permission denied: {{path}}"
+  dir_not_exist: "Directory '{{dir}}' does not exist"
+  template_not_found: "Template '{{name}}' not found"
+  already_exists: "Already exists: {{path}}"
+  network_error: "Network error: {{detail}}"
+
+prompts:
+  confirm_template: "Use template '{{name}}'?"
+  select_template: "Select template"
+  select_option: "Select option"
+  enter_value: "Enter value for {{name}}"
+  project_name: "Project name"
+
+commands:
+  list_title: "Available templates ({{count}}):"
+  empty_project: "Empty project detected"
+  scanning: "Scanning project"
+  install_success: "Template '{{name}}' installed"
+  install_fail: "Failed to install template '{{name}}'"
+  search_results: "Search results for '{{query}}':"

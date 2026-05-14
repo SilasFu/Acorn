@@ -1,0 +1,24 @@
+name: react-vite
+description: React + Vite 前端模板
+version: 1.0.0
+type: node
+
+detectors:
+  files:
+    - vite.config.ts
+    - vite.config.js
+  keywords:
+    - react
+    - vite
+
+variables:
+  - name: port
+    default: "5173"
+    prompt: Dev server port
+  - name: node_version
+    default: "20"
+    prompt: Node.js version
+
+files:
+  - Dockerfile
+  - .env.example

@@ -1,0 +1,20 @@
+name: rust-project
+type: rust
+priority: 10
+
+conditions:
+  files:
+    - Cargo.toml
+    - Cargo.lock
+  content:
+    - axum
+    - actix-web
+    - rocket
+    - tokio
+  patterns:
+    - "*.rs"
+
+indicators:
+  axum: "axum in Cargo.toml"
+  actix: "actix-web in Cargo.toml"
+  rocket: "rocket in Cargo.toml"

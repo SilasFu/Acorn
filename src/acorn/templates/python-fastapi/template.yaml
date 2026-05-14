@@ -1,0 +1,27 @@
+name: python-fastapi
+description: Python FastAPI 项目模板
+version: 1.0.0
+type: python
+
+detectors:
+  files:
+    - requirements.txt
+    - pyproject.toml
+  keywords:
+    - fastapi
+    - uvicorn
+    - starlette
+
+variables:
+  - name: port
+    default: "8000"
+    prompt: API port
+  - name: python_version
+    default: "3.12"
+    prompt: Python version
+
+files:
+  - Dockerfile
+  - docker-compose.yml
+  - .env.example
+  - .python-version

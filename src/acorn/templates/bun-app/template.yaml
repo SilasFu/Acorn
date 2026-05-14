@@ -1,0 +1,25 @@
+name: bun-app
+description: Bun 应用模板
+version: 1.0.0
+type: bun
+min_tool_version: "0.1.0"
+
+detectors:
+  files:
+    - bun.lockb
+    - bun.lock
+  keywords:
+    - bun
+
+variables:
+  - name: port
+    default: "3000"
+    prompt: "应用端口"
+  - name: bun_version
+    default: "1"
+    prompt: "Bun 版本"
+
+files:
+  - Dockerfile
+  - docker-compose.yml
+  - .env.example

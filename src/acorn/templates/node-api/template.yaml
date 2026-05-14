@@ -1,0 +1,25 @@
+name: node-api
+description: Node.js API 项目模板
+version: 1.0.0
+type: node
+
+detectors:
+  files:
+    - package.json
+  keywords:
+    - express
+    - koa
+    - fastify
+
+variables:
+  - name: port
+    default: "3000"
+    prompt: API port
+  - name: node_version
+    default: "20"
+    prompt: Node.js version
+
+files:
+  - Dockerfile
+  - docker-compose.yml
+  - .env.example

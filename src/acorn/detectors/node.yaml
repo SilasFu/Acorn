@@ -1,0 +1,23 @@
+name: node-project
+type: node
+priority: 10
+
+conditions:
+  files:
+    - package.json
+  content:
+    - express
+    - koa
+    - fastify
+    - engines
+  dependencies:
+    - express
+    - koa
+  patterns:
+    - "*.js"
+    - "*.ts"
+
+indicators:
+  express: "dependencies.express in package.json"
+  nest: "dependencies.@nestjs/core in package.json"
+  next: "dependencies.next in package.json"

@@ -1,0 +1,26 @@
+name: deno-app
+description: Deno 应用模板
+version: 1.0.0
+type: deno
+min_tool_version: "0.1.0"
+
+detectors:
+  files:
+    - deno.json
+    - deno.jsonc
+  keywords:
+    - deno.land
+    - "Deno."
+
+variables:
+  - name: port
+    default: "8000"
+    prompt: "应用端口"
+  - name: deno_version
+    default: "1"
+    prompt: "Deno 版本"
+
+files:
+  - Dockerfile
+  - docker-compose.yml
+  - .env.example

@@ -1,0 +1,38 @@
+messages:
+  detecting: "正在扫描项目 {{path}}..."
+  detected: "检测到: {{type}} (置信度: {{confidence}})"
+  framework: "框架: {{name}}"
+  template: "模板: {{name}}"
+  port: "端口: {{port}}"
+  not_detected: "无法检测项目类型"
+  no_match: "没有匹配的模板。使用 --template 指定，或 --interactive 选择。"
+  using_template: "使用模板: {{name}} ({{description}})"
+  generated: "生成了 {{count}} 个文件"
+  dry_run: "预览 {{count}} 个文件"
+  skipped: "跳过 {{path}} (已存在)"
+  forced: "已生成 {{path}}"
+  backed_up: "已备份 {{path}} -> {{bak}}"
+  warning_exists: "已存在，使用 --force 覆盖"
+
+errors:
+  not_found: "未找到: {{name}}"
+  permission_denied: "权限不足: {{path}}"
+  dir_not_exist: "目录不存在: {{dir}}"
+  template_not_found: "模板未找到: {{name}}"
+  already_exists: "已存在: {{path}}"
+  network_error: "网络错误: {{detail}}"
+
+prompts:
+  confirm_template: "使用模板 '{{name}}'?"
+  select_template: "选择模板"
+  select_option: "选择选项"
+  enter_value: "输入 {{name}} 的值"
+  project_name: "项目名称"
+
+commands:
+  list_title: "可用模板 ({{count}}):"
+  empty_project: "检测到空项目"
+  scanning: "正在扫描项目"
+  install_success: "模板 '{{name}}' 安装成功"
+  install_fail: "模板 '{{name}}' 安装失败"
+  search_results: "搜索 '{{query}}' 的结果:"

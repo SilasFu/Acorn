@@ -1,0 +1,24 @@
+name: java-project
+type: java
+priority: 10
+
+conditions:
+  files:
+    - pom.xml
+    - build.gradle
+    - build.gradle.kts
+    - settings.gradle
+  content:
+    - spring-boot
+    - spring-boot-starter-web
+    - javax.persistence
+    - org.springframework
+  dependencies:
+    - spring-boot
+  patterns:
+    - "*.java"
+    - "*.kt"
+
+indicators:
+  spring-boot: spring-boot in pom.xml
+  spring-mvc: spring-webmvc in pom.xml

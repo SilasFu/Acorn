@@ -1,0 +1,27 @@
+name: php-laravel
+description: PHP Laravel 项目模板
+version: 1.0.0
+type: php
+min_tool_version: "0.1.0"
+
+detectors:
+  files:
+    - composer.json
+    - artisan
+  keywords:
+    - laravel/framework
+    - Illuminate
+
+variables:
+  - name: port
+    default: "8000"
+    prompt: "应用端口"
+  - name: php_version
+    default: "8.3"
+    prompt: "PHP 版本"
+
+files:
+  - Dockerfile
+  - docker-compose.yml
+  - .env.example
+  - .gitignore

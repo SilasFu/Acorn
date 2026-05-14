@@ -1,0 +1,23 @@
+name: python-project
+type: python
+priority: 10
+
+conditions:
+  files:
+    - requirements.txt
+    - pyproject.toml
+    - setup.py
+    - setup.cfg
+    - Pipfile
+  content:
+    - fastapi
+    - uvicorn
+    - django
+    - flask
+  patterns:
+    - "*.py"
+
+indicators:
+  fastapi: "fastapi in requirements.txt"
+  django: "django in requirements.txt"
+  flask: "flask in requirements.txt"

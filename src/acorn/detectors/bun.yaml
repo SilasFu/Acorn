@@ -1,0 +1,15 @@
+name: bun-project
+type: bun
+priority: 10
+
+conditions:
+  files:
+    - bun.lockb
+    - bun.lock
+  content:
+    - bun
+    - "bun:"
+  patterns:
+    - "*.ts"
+    - "*.js"
+    - "*.tsx"

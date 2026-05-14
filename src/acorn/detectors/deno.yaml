@@ -1,0 +1,16 @@
+name: deno-project
+type: deno
+priority: 10
+
+conditions:
+  files:
+    - deno.json
+    - deno.jsonc
+    - import_map.json
+  content:
+    - deno.land
+    - "Deno."
+  patterns:
+    - "*.ts"
+    - "*.js"
+    - "*.tsx"

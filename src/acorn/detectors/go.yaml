@@ -1,0 +1,18 @@
+name: go-project
+type: go
+priority: 10
+
+conditions:
+  files:
+    - go.mod
+    - go.sum
+  content:
+    - github.com/gin-gonic/gin
+    - github.com/labstack/echo
+    - package main
+  patterns:
+    - "*.go"
+
+indicators:
+  gin: "github.com/gin-gonic/gin in go.mod"
+  echo: "github.com/labstack/echo in go.mod"
