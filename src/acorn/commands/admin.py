@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import argparse
-import shutil
 from pathlib import Path
 
 from acorn.check_update import check_pypi_version
 from acorn.config import export_config, import_config
-from acorn.format import EXIT_SUCCESS, EXIT_ERROR
-from acorn.log import error as log_error, warning as log_warning
+from acorn.format import EXIT_ERROR, EXIT_SUCCESS
+from acorn.log import error as log_error
+from acorn.log import warning as log_warning
 
 
 def cmd_completion(shell: str) -> int:

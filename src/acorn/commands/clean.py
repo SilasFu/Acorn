@@ -5,8 +5,9 @@ import shutil
 from pathlib import Path
 
 from acorn.config import load_manifest, load_project_lock, remove_from_manifest
-from acorn.format import EXIT_SUCCESS, EXIT_ERROR
-from acorn.log import error as log_error, info as log_info
+from acorn.format import EXIT_ERROR, EXIT_SUCCESS
+from acorn.log import error as log_error
+from acorn.log import info as log_info
 
 
 def cmd_clean(args: argparse.Namespace) -> int:

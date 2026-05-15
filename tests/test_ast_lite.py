@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 from acorn.analysis import ast_lite
-from acorn.analysis.insights import ProjectInsights, analyze
+from acorn.analysis.insights import analyze
 
 
 def test_detect_import_style_relative(tmp_path):

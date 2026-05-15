@@ -1,22 +1,22 @@
 from __future__ import annotations
 
 from acorn.analysis.detector import (
+    ENTRY_FILE_PATTERNS,
     IGNORE_DIRS,
     MANIFEST_MAP,
-    ENTRY_FILE_PATTERNS,
-    _read_file_safe,
-    _find_files_recursive,
-    _has_files,
     _check_content_recursive,
     _check_dependencies,
+    _check_indicator,
     _check_patterns,
     _detect_by_manifest,
-    _find_entry_files,
     _detect_port,
-    evaluate_rule,
-    detect_project_type,
+    _find_entry_files,
+    _find_files_recursive,
+    _has_files,
+    _read_file_safe,
     detect_mixed_project,
-    _check_indicator,
+    detect_project_type,
+    evaluate_rule,
     evaluate_template_match,
 )
 

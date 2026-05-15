@@ -3,10 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import patch
 
-from acorn.models import GenerationOptions, Template, TemplateVariable
 from acorn.generators.builtin import (
     generate_file_content as _generate_builtin_file,
 )
+from acorn.models import GenerationOptions, Template, TemplateVariable
 from acorn.template_engine import (
     _generate_default_content,
     _get_default_files,

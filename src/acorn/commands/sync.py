@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 from acorn.analysis.detector import detect_project_type
 from acorn.analysis.insights import analyze, has_source_code
 from acorn.format import EXIT_ERROR, EXIT_SUCCESS, color, confirm_or_exit
-from acorn.generators.builtin import AI_FILES, GENERATORS, generate_file_content
-from acorn.log import debug as log_debug, error as log_error, info as log_info
+from acorn.generators.builtin import generate_file_content
+from acorn.log import error as log_error
+from acorn.log import info as log_info
 
 SYNC_TARGETS = {
     "cursorrules": ".cursorrules",

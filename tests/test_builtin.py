@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 from acorn.generators.builtin import (
-    DOCKER_FILES,
     AI_FILES,
+    DOCKER_FILES,
     LANGUAGE_CONVENTIONS,
     generate_file_content,
 )

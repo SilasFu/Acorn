@@ -4,14 +4,13 @@ import json
 import sys
 from pathlib import Path
 
-from acorn.analysis.health import diagnose
-from acorn.analysis.health_rules import CheckCategory, CheckPriority
-from acorn.analysis.insights import has_source_code
 from acorn import __version__
+from acorn.analysis.health import diagnose
+from acorn.analysis.health_rules import CheckCategory
+from acorn.analysis.insights import has_source_code
 from acorn.config import load_config
-from acorn.format import color, confirm_or_exit, EXIT_SUCCESS
+from acorn.format import EXIT_SUCCESS, color, confirm_or_exit
 from acorn.i18n import detect_language, set_language, t
-from acorn.log import info as log_info
 
 
 def _msg(key: str, fallback: str = "") -> str:

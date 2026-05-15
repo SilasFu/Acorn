@@ -4,8 +4,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 from acorn.analysis.health import diagnose
-from acorn.analysis.health_rules import CheckRule, ALL_RULES
-from acorn.commands.doctor import cmd_doctor, _display_report
+from acorn.analysis.health_rules import ALL_RULES
+from acorn.commands.doctor import _display_report, cmd_doctor
 
 
 def test_diagnose_empty_dir(tmp_path):
@@ -77,7 +77,7 @@ def test_doctor_with_source_code(tmp_path, monkeypatch):
         patch("pathlib.Path.cwd", return_value=tmp_path),
         patch("acorn.commands.doctor.confirm_or_exit", return_value=False),
     ):
-        from acorn.analysis.health import HealthReport, HealthCheck
+        from acorn.analysis.health import HealthCheck, HealthReport
         from acorn.analysis.health_rules import CheckCategory, CheckPriority
         mock_diagnose.return_value = HealthReport(
             project_path=tmp_path, project_type="node", framework="Express",
@@ -107,7 +107,7 @@ def test_doctor_with_source_code_fix_prompt(tmp_path, monkeypatch):
         patch("acorn.commands.doctor.confirm_or_exit", return_value=True),
         patch("acorn.commands.fix.fix_all", return_value=0) as mock_fix,
     ):
-        from acorn.analysis.health import HealthReport, HealthCheck
+        from acorn.analysis.health import HealthCheck, HealthReport
         from acorn.analysis.health_rules import CheckCategory, CheckPriority
         mock_diagnose.return_value = HealthReport(
             project_path=tmp_path, project_type="node", framework="Express",
@@ -128,7 +128,7 @@ def test_doctor_with_source_code_fix_prompt(tmp_path, monkeypatch):
 
 
 def test_doctor_display_report(capsys):
-    from acorn.analysis.health import HealthReport, HealthCheck
+    from acorn.analysis.health import HealthCheck, HealthReport
     from acorn.analysis.health_rules import CheckCategory, CheckPriority
     report = HealthReport(
         project_path=Path("/test"),

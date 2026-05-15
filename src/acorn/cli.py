@@ -9,24 +9,23 @@ from acorn import __version__
 from acorn.commands.admin import cmd_check_update, cmd_completion, cmd_export, cmd_import
 from acorn.commands.analyze_cmd import cmd_analyze
 from acorn.commands.clean import cmd_clean
-from acorn.commands.doctor import cmd_doctor
 from acorn.commands.docker import cmd_add_ci, cmd_dockerize
+from acorn.commands.doctor import cmd_doctor
 from acorn.commands.fix import cmd_fix
-from acorn.commands.sync import cmd_sync
 from acorn.commands.generate import cmd_generate
 from acorn.commands.marketplace import cmd_install, cmd_search
+from acorn.commands.sync import cmd_sync
 from acorn.commands.template_cmd import cmd_add, cmd_init, cmd_list, cmd_remove, cmd_validate, cmd_validate_ai_context
-from acorn.check_update import check_pypi_version
-from acorn.config import CONFIG_FILE, TEMPLATES_DIR, load_config, load_templates
+from acorn.config import CONFIG_FILE, load_config
 from acorn.detector import detect_project_type
-from acorn.format import EXIT_ERROR, EXIT_SUCCESS, color, confirm_or_exit, suggest_help
-from acorn.marketplace import install_from_github, search_all, search_github
-from acorn.template_engine import list_templates
+from acorn.format import EXIT_ERROR, EXIT_SUCCESS, confirm_or_exit
 from acorn.i18n import detect_language, set_language
-from acorn.log import debug as log_debug, error as log_error, info as log_info, set_level as log_set_level
-from acorn.log import warning as log_warning
+from acorn.log import debug as log_debug
+from acorn.log import error as log_error
+from acorn.log import set_level as log_set_level
 from acorn.security import format_findings, scan_template
-from acorn.telemetry import is_enabled as telemetry_is_enabled, set_enabled as telemetry_set_enabled
+from acorn.telemetry import is_enabled as telemetry_is_enabled
+from acorn.telemetry import set_enabled as telemetry_set_enabled
 from acorn.wizard import cmd_wizard
 
 _confirm_or_exit = confirm_or_exit

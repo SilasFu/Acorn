@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
 from unittest.mock import patch
 
-from acorn.commands.fix import cmd_fix, fix_all, GENERATABLE_FILES
+from acorn.commands.fix import GENERATABLE_FILES, cmd_fix, fix_all
 
 
 def test_fix_dockerfile(tmp_path):
@@ -15,15 +14,16 @@ def test_fix_dockerfile(tmp_path):
             confidence=0.9,
         )
         with patch.object(type("args", (), {"dir": str(tmp_path), "fix_dockerfile": True, "fix_dockerignore": False, "fix_gitignore": False, "fix_cursorrules": False, "fix_claude_md": False, "fix_copilot": False, "fix_ai": False, "fix_all": False, "force": False, "dry_run": False})(), "dir", str(tmp_path)):
-            from acorn.commands.fix import cmd_fix
             import argparse
+
+            from acorn.commands.fix import cmd_fix
             args = argparse.Namespace(
                 dir=str(tmp_path), fix_dockerfile=True,
                 fix_dockerignore=False, fix_gitignore=False,
                 fix_cursorrules=False, fix_claude_md=False, fix_copilot=False,
                 fix_ai=False, fix_all=False, force=False, dry_run=False,
             )
-            rc = cmd_fix(args)
+        rc = cmd_fix(args)
     assert rc == 0
     assert (tmp_path / "Dockerfile").exists()
 
@@ -88,7 +88,7 @@ def test_fix_skips_existing_without_force(tmp_path):
             "force": False, "dry_run": False,
         })()
         args.dir = str(tmp_path)
-        rc = cmd_fix(args)
+        cmd_fix(args)
     content = (tmp_path / "Dockerfile").read_text()
     assert content == "existing content"
 
@@ -147,7 +147,6 @@ def test_fix_no_targets_returns_error(tmp_path):
 
 
 def test_fix_reuses_detection(tmp_path):
-    from acorn.commands.fix import fix_all
     from acorn.models import DetectionResult, ProjectType
     (tmp_path / "package.json").write_text('{"name": "test"}')
     detection = DetectionResult(

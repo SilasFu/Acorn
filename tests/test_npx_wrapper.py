@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import subprocess
-import sys
 from pathlib import Path
 
 NPX_INDEX = Path(__file__).parent.parent / "packages" / "acorn-cli" / "index.js"

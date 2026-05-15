@@ -1,9 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import patch
-
-import pytest
 
 from acorn.commands.clean import cmd_clean
 
@@ -21,10 +18,9 @@ def test_clean_no_lock(tmp_path):
 
 
 def _save_lock(path: Path, files: list[str]) -> None:
-    from acorn.config import save_project_lock
     lock_dir = path / ".acorn"
     lock_dir.mkdir(parents=True, exist_ok=True)
-    (lock_dir / "lock.yaml").write_text(f"files:\n" + "\n".join(f"  - {f}" for f in files))
+    (lock_dir / "lock.yaml").write_text("files:\n" + "\n".join(f"  - {f}" for f in files))
 
 
 def test_clean_with_lock(tmp_path):

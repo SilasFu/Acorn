@@ -5,7 +5,7 @@ from pathlib import Path
 
 from acorn.analyzer import AnalyzeOptions
 from acorn.analyzer import analyze as ai_analyze
-from acorn.format import color, EXIT_SUCCESS, EXIT_ERROR
+from acorn.format import EXIT_ERROR, EXIT_SUCCESS, color
 from acorn.i18n import text as i18n_text
 from acorn.log import error as log_error
 

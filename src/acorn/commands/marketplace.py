@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from acorn.format import color, EXIT_SUCCESS, EXIT_ERROR, EXIT_NO_MATCH
+from acorn.format import EXIT_ERROR, EXIT_NO_MATCH, EXIT_SUCCESS, color
 from acorn.i18n import cmd_text
-from acorn.log import error as log_error, info as log_info, warning as log_warning
+from acorn.log import error as log_error
+from acorn.log import info as log_info
+from acorn.log import warning as log_warning
 from acorn.marketplace import install_from_github, search_all, search_github
 
 

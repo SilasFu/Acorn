@@ -217,12 +217,12 @@ def _generate_dockerfile(project_type: str, variables: dict[str, str] | None = N
     lines = [f"FROM {c['base_image']} AS builder", ""]
     lines.append("WORKDIR /app")
     lines.append("")
-    lines.append(f"# Install dependencies")
+    lines.append("# Install dependencies")
     lines.append(f"RUN {install}")
     lines.append("")
 
     if build:
-        lines.append(f"# Build the application")
+        lines.append("# Build the application")
         lines.append(f"RUN {build}")
         lines.append("")
 
@@ -230,7 +230,7 @@ def _generate_dockerfile(project_type: str, variables: dict[str, str] | None = N
     lines.append("")
     lines.append("WORKDIR /app")
     lines.append("")
-    lines.append(f"# Copy built artifacts")
+    lines.append("# Copy built artifacts")
     lines.append("COPY --from=builder /app /app")
     lines.append("")
 
@@ -240,7 +240,7 @@ def _generate_dockerfile(project_type: str, variables: dict[str, str] | None = N
     lines.append("")
     lines.append(f"EXPOSE {port}")
     lines.append("")
-    lines.append(f"HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \\")
+    lines.append("HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \\")
     lines.append(f"  {health}")
     lines.append("")
     lines.append(f"CMD [\"{run}\"]")
@@ -257,9 +257,9 @@ def _generate_docker_compose(project_type: str, variables: dict[str, str] | None
 
     lines = ["services:"]
     lines.append(f"  {service_name}:")
-    lines.append(f"    build: .")
+    lines.append("    build: .")
     lines.append("")
-    lines.append(f"    ports:")
+    lines.append("    ports:")
     lines.append(f'      - "{port}:{port}"')
     lines.append("")
     lines.append("    environment:")
@@ -327,7 +327,7 @@ def _generate_gitignore(project_type: str, variables: dict[str, str] | None = No
     ]
 
     if ignores:
-        lines.append(f"# Project-specific")
+        lines.append("# Project-specific")
         for item in ignores:
             lines.append(item)
         lines.append("")

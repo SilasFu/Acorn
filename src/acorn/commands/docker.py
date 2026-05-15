@@ -7,7 +7,8 @@ from acorn.analysis.insights import analyze
 from acorn.detector import detect_project_type
 from acorn.format import EXIT_ERROR, EXIT_SUCCESS, color
 from acorn.generators.builtin import DOCKER_FILES, generate_file_content
-from acorn.log import error as log_error, info as log_info
+from acorn.log import error as log_error
+from acorn.log import info as log_info
 from acorn.models import ProjectType
 
 CI_WORKFLOWS_DIR = ".github/workflows"

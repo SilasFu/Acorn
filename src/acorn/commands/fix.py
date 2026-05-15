@@ -5,11 +5,11 @@ from pathlib import Path
 
 from acorn.analysis.detector import detect_project_type
 from acorn.analysis.insights import analyze
-from acorn.detector import detect_project_type as detector_detect
-from acorn.format import EXIT_ERROR, EXIT_SUCCESS, color, confirm_or_exit
-from acorn.generators.builtin import DOCKER_FILES, generate_file_content
+from acorn.format import EXIT_ERROR, EXIT_SUCCESS, color
+from acorn.generators.builtin import generate_file_content
 from acorn.i18n import text as i18n_text
-from acorn.log import debug as log_debug, error as log_error, info as log_info
+from acorn.log import error as log_error
+from acorn.log import info as log_info
 
 GENERATABLE_FILES = {
     "dockerfile": {"file_type": "Dockerfile", "dest_name": "Dockerfile"},

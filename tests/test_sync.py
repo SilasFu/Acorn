@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
 from unittest.mock import patch
 
-from acorn.commands.sync import SYNC_TARGETS, _detect_drift, _install_hook, cmd_sync
+from acorn.commands.sync import _detect_drift, _install_hook, cmd_sync
 
 
 def test_sync_detects_drift(tmp_path):

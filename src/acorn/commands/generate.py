@@ -8,11 +8,16 @@ from acorn.config import (
     load_templates,
 )
 from acorn.detector import detect_mixed_project, detect_project_type
-from acorn.format import color, suggest_help, EXIT_SUCCESS, EXIT_ERROR, EXIT_NO_MATCH
-from acorn.i18n import cmd_text, error as i18n_error, prompt as i18n_prompt, text as i18n_text
-from acorn.log import debug as log_debug, error as log_error, info as log_info
+from acorn.format import EXIT_ERROR, EXIT_NO_MATCH, EXIT_SUCCESS, color, suggest_help
+from acorn.i18n import cmd_text
+from acorn.i18n import error as i18n_error
+from acorn.i18n import prompt as i18n_prompt
+from acorn.i18n import text as i18n_text
+from acorn.log import debug as log_debug
+from acorn.log import error as log_error
+from acorn.log import info as log_info
 from acorn.models import GenerationOptions, ProjectType
-from acorn.template_engine import auto_generate, generate_from_template, list_templates, save_as_template_from_project
+from acorn.template_engine import auto_generate, generate_from_template, save_as_template_from_project
 
 
 def _handle_mixed_project(target_dir: Path, options: GenerationOptions) -> str | None:

@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from acorn.analysis.detector import detect_project_type
-from acorn.analysis.health_rules import ALL_RULES, CheckCategory, CheckPriority, CheckRule
+from acorn.analysis.health_rules import ALL_RULES, CheckCategory, CheckPriority
 from acorn.analysis.insights import ProjectInsights, analyze
 from acorn.models import DetectionResult
 

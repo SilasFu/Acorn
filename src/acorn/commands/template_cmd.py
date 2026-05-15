@@ -13,9 +13,10 @@ from acorn.config import (
     init_project_config,
     load_templates,
 )
-from acorn.format import color, EXIT_SUCCESS, EXIT_ERROR
+from acorn.format import EXIT_ERROR, EXIT_SUCCESS, color
 from acorn.i18n import cmd_text
-from acorn.log import error as log_error, info as log_info
+from acorn.log import error as log_error
+from acorn.log import info as log_info
 from acorn.models import ProjectType
 from acorn.template_engine import list_templates
 
