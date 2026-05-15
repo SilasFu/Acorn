@@ -27,7 +27,7 @@ def test_check_update_upgrade_available(mock_urlopen):
 def test_check_update_current(mock_urlopen):
     mock_resp = MagicMock()
     mock_resp.read.return_value = json.dumps({
-        "info": {"version": "0.2.0"}
+        "info": {"version": "0.3.0"}
     }).encode("utf-8")
     mock_resp.__enter__.return_value = mock_resp
     mock_urlopen.return_value = mock_resp
@@ -35,7 +35,7 @@ def test_check_update_current(mock_urlopen):
     result = check_pypi_version(offline=False)
     assert result is not None
     assert result["upgrade_available"] is False
-    assert result["latest"] == "0.2.0"
+    assert result["latest"] == "0.3.0"
 
 
 @patch("acorn.check_update.urllib.request.urlopen")

@@ -80,9 +80,50 @@ def test_gitignore_go():
     assert "*.exe" in content
 
 
-def test_cursorrules_has_tech_stack():
+def test_cursorrules_has_sections():
     content = generate_file_content(".cursorrules", "node")
-    assert "Tech Stack" in content
+    assert "## Tech Stack" in content
+    assert "## Conventions" in content
+    assert "## Common Commands" in content
+
+
+def test_cursorrules_with_insights_has_rich_content():
+    class FakeInsights:
+        orm = "prisma"
+        test_runner = "vitest"
+        bundler = "vite"
+        state_management = "Zustand"
+        styling_approach = "tailwindcss"
+        api_style = "REST"
+        auth_lib = "next-auth"
+        package_manager = "pnpm"
+        import_style = "path-alias"
+        module_system = "esm"
+        naming_convention = "camelCase"
+        architecture_pattern = "app-router"
+        api_route_paths = ["/api/users", "/api/posts"]
+        directory_purposes = {
+            "components": "Reusable React components",
+            "lib": "Utility functions",
+            "app": "Route handlers and pages",
+        }
+        src_structure = {}
+
+    class FakeDetection:
+        project_type = type("pt", (), {"value": "node"})()
+        framework = "Next.js"
+        matched_template = "node-api"
+        confidence = 0.95
+
+    content = generate_file_content(".cursorrules", "node", insights=FakeInsights(), detection=FakeDetection())
+    assert "Zustand" in content
+    assert "tailwindcss" in content
+    assert "app-router" in content
+    assert "path-alias" in content
+    assert "## Project Structure" in content
+    assert "## API Routes" in content
+    assert "/api/users" in content
+    assert "Reusable React components" in content
 
 
 def test_claude_md_has_sections():
@@ -92,10 +133,70 @@ def test_claude_md_has_sections():
     assert "## Conventions" in content
 
 
+def test_claude_md_with_insights():
+    class FakeInsights:
+        orm = "sqlalchemy"
+        test_runner = "pytest"
+        bundler = None
+        state_management = None
+        styling_approach = None
+        api_style = None
+        auth_lib = None
+        package_manager = "pip"
+        import_style = "unknown"
+        module_system = "unknown"
+        naming_convention = "snake_case"
+        architecture_pattern = None
+        api_route_paths = []
+        directory_purposes = {"api": "API route handlers", "models": "Data models"}
+        src_structure = {}
+
+    class FakeDetection:
+        project_type = type("pt", (), {"value": "python"})()
+        framework = "FastAPI"
+        matched_template = "python-fastapi"
+        confidence = 0.95
+
+    content = generate_file_content("CLAUDE.md", "python", insights=FakeInsights(), detection=FakeDetection())
+    assert "Project Structure" in content
+    assert "API route handlers" in content
+
+
 def test_copilot_instructions():
     content = generate_file_content(".github/copilot-instructions.md", "go")
     assert "# Project Context" in content
     assert "Language:" in content
+
+
+def test_copilot_instructions_with_insights():
+    class FakeInsights:
+        orm = "prisma"
+        test_runner = "vitest"
+        bundler = "vite"
+        state_management = "Zustand"
+        styling_approach = "tailwindcss"
+        api_style = "tRPC"
+        auth_lib = "next-auth"
+        package_manager = "pnpm"
+        import_style = "path-alias"
+        module_system = "esm"
+        naming_convention = "camelCase"
+        architecture_pattern = None
+        api_route_paths = []
+        directory_purposes = {}
+        src_structure = {}
+
+    class FakeDetection:
+        project_type = type("pt", (), {"value": "node"})()
+        framework = "Next.js"
+        matched_template = "node-api"
+        confidence = 0.95
+
+    content = generate_file_content(".github/copilot-instructions.md", "node", insights=FakeInsights(), detection=FakeDetection())
+    assert "tRPC" in content
+    assert "path-alias" in content
+    assert "camelCase" in content
+    assert "Import Style:" in content
 
 
 def test_unknown_file_type_raises():
@@ -136,7 +237,6 @@ def test_generate_file_content_with_detection():
 
     content = generate_file_content(".cursorrules", "node", detection=FakeDetection())
     assert "Express" in content
-    assert "node-api" in content
 
 
 def test_generate_file_content_with_insights():
@@ -144,6 +244,18 @@ def test_generate_file_content_with_insights():
         orm = "prisma"
         test_runner = "vitest"
         bundler = "vite"
+        state_management = None
+        styling_approach = None
+        api_style = None
+        auth_lib = None
+        package_manager = "pnpm"
+        import_style = "path-alias"
+        module_system = "esm"
+        naming_convention = "camelCase"
+        architecture_pattern = None
+        api_route_paths = []
+        directory_purposes = {}
+        src_structure = {}
 
     content = generate_file_content(".cursorrules", "node", insights=FakeInsights())
     assert "prisma" in content

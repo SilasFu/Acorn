@@ -348,50 +348,84 @@ def _generate_cursorrules(
 
     lines = ["You are an expert AI coding assistant specialized in this project.", ""]
 
-    if detection and hasattr(detection, "framework") and detection.framework:
-        lines.append(f"# Project Overview")
-        lines.append(f"This is a {detection.framework} ({project_type}) project.")
+    lines.append("# Project Overview")
+    fw = detection.framework if detection and hasattr(detection, "framework") and detection.framework else None
+    if fw:
+        lines.append(f"This is a {fw} ({pt}) project.")
     else:
-        lines.append(f"# Project Overview")
-        lines.append(f"This is a {project_type} project.")
-
+        lines.append(f"This is a {pt} project.")
     lines.append("")
-
-    if detection and hasattr(detection, "matched_template") and detection.matched_template:
-        lines.append(f"Template: {detection.matched_template}")
-
-    lines.append("")
-    lines.append(f"# Tech Stack")
-    lines.append(f"- Language: {pt}")
-
-    if detection and hasattr(detection, "framework") and detection.framework:
-        lines.append(f"- Framework: {detection.framework}")
 
     if insights:
-        if insights.orm:
-            lines.append(f"- ORM: {insights.orm}")
-        if insights.test_runner:
-            lines.append(f"- Test: {insights.test_runner}")
-        if insights.bundler:
-            lines.append(f"- Bundler: {insights.bundler}")
+        arch = getattr(insights, "architecture_pattern", None)
+        if arch:
+            lines.append(f"This project uses the **{arch}** architecture pattern.")
+            lines.append("")
 
+    lines.append("## Tech Stack")
+    lines.append(f"- **Language**: {pt}")
+    if fw:
+        lines.append(f"- **Framework**: {fw}")
+    if insights:
+        if insights.state_management:
+            lines.append(f"- **State Management**: {insights.state_management}")
+        if insights.styling_approach:
+            lines.append(f"- **Styling**: {insights.styling_approach}")
+        if insights.orm:
+            lines.append(f"- **Database/ORM**: {insights.orm}")
+        if insights.test_runner:
+            lines.append(f"- **Testing**: {insights.test_runner}")
+        if insights.bundler:
+            lines.append(f"- **Bundler**: {insights.bundler}")
+        if insights.api_style:
+            lines.append(f"- **API Style**: {insights.api_style}")
+        if insights.auth_lib:
+            lines.append(f"- **Auth**: {insights.auth_lib}")
+        if insights.package_manager:
+            lines.append(f"- **Package Manager**: {insights.package_manager}")
     lines.append("")
-    lines.append(f"# Conventions")
+
+    if insights:
+        im = getattr(insights, "import_style", None)
+        ms = getattr(insights, "module_system", None)
+        nc = getattr(insights, "naming_convention", None)
+        if im and im != "unknown":
+            lines.append(f"- **Import Style**: {im}")
+        if ms and ms != "unknown":
+            lines.append(f"- **Module System**: {ms}")
+        if nc and nc != "unknown":
+            lines.append(f"- **Naming Convention**: {nc}")
+        if im or ms or (nc and nc != "unknown"):
+            lines.append("")
+
+    if insights and hasattr(insights, "directory_purposes") and insights.directory_purposes:
+        lines.append("## Project Structure")
+        for d, purpose in sorted(insights.directory_purposes.items()):
+            colored = f"**`{d}/`** — {purpose}"
+            lines.append(f"- {colored}")
+        lines.append("")
+
+    if insights and hasattr(insights, "api_route_paths") and insights.api_route_paths:
+        lines.append("## API Routes")
+        for route in sorted(insights.api_route_paths):
+            lines.append(f"- `{route}`")
+        lines.append("")
+
+    lines.append("## Conventions")
     for c in conventions:
         lines.append(f"- {c}")
-
     lines.append("")
-    lines.append(f"# Common Commands")
+
+    lines.append("## Common Commands")
     for cmd in commands:
         lines.append(f"- `{cmd}`")
-
     lines.append("")
-    lines.append(f"# Environment")
+
+    lines.append("## Environment")
     for env_name, env_val in ENV_VARS.get(pt, []):
         lines.append(f"- `{env_name}`: {env_val}")
-
     lines.append("")
-    lines.append(f"# Port")
+
     lines.append(f"The application runs on port {dev_port}")
     lines.append("")
 
@@ -409,33 +443,55 @@ def _generate_claude_md(
     commands = COMMON_COMMANDS.get(pt, [])
 
     lines = ["# Project", ""]
-    if detection and hasattr(detection, "framework") and detection.framework:
-        lines.append(f"This is a {detection.framework} ({project_type}) project.")
-    else:
-        lines.append(f"This is a {project_type} project.")
-
+    fw = detection.framework if detection and hasattr(detection, "framework") and detection.framework else None
+    lines.append(f"This is a {fw if fw else pt} ({pt}) project.")
     lines.append("")
+
+    if insights:
+        arch = getattr(insights, "architecture_pattern", None)
+        if arch:
+            lines.append(f"Architecture: {arch}")
+            lines.append("")
+
     lines.append("## Tech Stack")
     lines.append(f"- **Language**: {pt}")
-    if detection and hasattr(detection, "framework") and detection.framework:
-        lines.append(f"- **Framework**: {detection.framework}")
+    if fw:
+        lines.append(f"- **Framework**: {fw}")
     if insights:
+        if insights.state_management:
+            lines.append(f"- **State Management**: {insights.state_management}")
+        if insights.styling_approach:
+            lines.append(f"- **Styling**: {insights.styling_approach}")
         if insights.orm:
             lines.append(f"- **ORM**: {insights.orm}")
         if insights.test_runner:
             lines.append(f"- **Test Runner**: {insights.test_runner}")
-
+        if insights.bundler:
+            lines.append(f"- **Bundler**: {insights.bundler}")
+        if insights.api_style:
+            lines.append(f"- **API Style**: {insights.api_style}")
+        if insights.auth_lib:
+            lines.append(f"- **Auth**: {insights.auth_lib}")
+        if insights.package_manager:
+            lines.append(f"- **Package Manager**: {insights.package_manager}")
     lines.append("")
+
+    if insights and hasattr(insights, "directory_purposes") and insights.directory_purposes:
+        lines.append("## Project Structure")
+        for d, purpose in sorted(insights.directory_purposes.items()):
+            lines.append(f"- `{d}/` — {purpose}")
+        lines.append("")
+
     lines.append("## Conventions")
     for c in conventions:
         lines.append(f"- {c}")
-
     lines.append("")
+
     lines.append("## Commands")
     for cmd in commands:
         lines.append(f"- `{cmd}`")
-
     lines.append("")
+
     return "\n".join(lines)
 
 
@@ -449,18 +505,38 @@ def _generate_copilot_instructions(
     conventions = ANTI_PATTERNS.get(pt, [])
 
     lines = ["# Project Context", ""]
+    fw = detection.framework if detection and hasattr(detection, "framework") and detection.framework else None
     lines.append(f"Language: {pt}")
-    if detection and hasattr(detection, "framework") and detection.framework:
-        lines.append(f"Framework: {detection.framework}")
-    if insights and insights.test_runner:
-        lines.append(f"Test: {insights.test_runner}")
+    if fw:
+        lines.append(f"Framework: {fw}")
+    if insights:
+        if insights.state_management:
+            lines.append(f"State Management: {insights.state_management}")
+        if insights.orm:
+            lines.append(f"ORM: {insights.orm}")
+        if insights.test_runner:
+            lines.append(f"Test: {insights.test_runner}")
+        if insights.api_style:
+            lines.append(f"API Style: {insights.api_style}")
+        if insights.bundler:
+            lines.append(f"Bundler: {insights.bundler}")
+        if insights.styling_approach:
+            lines.append(f"Styling: {insights.styling_approach}")
+        if insights.package_manager:
+            lines.append(f"Package Manager: {insights.package_manager}")
+        im = getattr(insights, "import_style", None)
+        nc = getattr(insights, "naming_convention", None)
+        if im and im != "unknown":
+            lines.append(f"Import Style: {im}")
+        if nc and nc != "unknown":
+            lines.append(f"Naming Convention: {nc}")
 
     lines.append("")
     lines.append("## Conventions")
     for c in conventions:
         lines.append(f"- {c}")
-
     lines.append("")
+
     return "\n".join(lines)
 
 
