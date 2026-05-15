@@ -50,6 +50,8 @@ jobs:
             src/acorn/cli.py
       - name: Smoke test
         shell: bash
+        env:
+          PYTHONIOENCODING: utf-8
         run: |
           if [[ "${{ matrix.os }}" == windows-latest ]]; then
             ./dist/acorn.exe --help

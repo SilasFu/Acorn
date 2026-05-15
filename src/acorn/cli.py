@@ -141,6 +141,10 @@ def _setup_logging(args: argparse.Namespace) -> None:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+
     if len(sys.argv) <= 1:
         return cmd_doctor()
 
