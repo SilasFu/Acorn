@@ -184,7 +184,7 @@ def test_main_add_template(tmp_path):
     template_dir.mkdir()
     (template_dir / "template.yaml").write_text("name: my-cli-test-template\ndescription: Test\nversion: 1.0.0\nfiles: []\n")
 
-    with patch("acorn.cli.TEMPLATES_DIR", tmp_path / "templates"):
+    with patch("acorn.commands.template_cmd.TEMPLATES_DIR", tmp_path / "templates"):
         with patch.object(sys, "argv", ["acorn", "--add", str(template_dir)]):
             rc = main()
     assert rc == 0
@@ -201,7 +201,7 @@ def test_main_remove_template(tmp_path):
     template_dir.mkdir(parents=True)
     (template_dir / "template.yaml").write_text("name: test-tpl\n")
 
-    with patch("acorn.cli.TEMPLATES_DIR", tmp_path / "templates"):
+    with patch("acorn.commands.template_cmd.TEMPLATES_DIR", tmp_path / "templates"):
         with patch.object(sys, "argv", ["acorn", "--remove", "test-tpl"]):
             rc = main()
     assert rc == 0
@@ -324,7 +324,7 @@ def test_main_scan_with_findings(tmp_path):
 
 
 def test_cmd_list_empty():
-    with patch("acorn.cli.list_templates", return_value=[]):
+    with patch("acorn.commands.template_cmd.list_templates", return_value=[]):
         with patch.object(sys, "argv", ["acorn", "--list"]):
             rc = main()
     assert rc == 0
@@ -448,7 +448,7 @@ def test_main_search_with_results():
     mock_results = [
         {"full_name": "user/tpl", "description": "A template", "stars": 42, "url": "", "updated_at": "", "name": "tpl"},
     ]
-    with patch("acorn.cli.search_all", return_value=mock_results):
+    with patch("acorn.commands.marketplace.search_all", return_value=mock_results):
         with patch.object(sys, "argv", ["acorn", "--search", "test"]):
             rc = main()
     assert rc == 0
@@ -458,15 +458,15 @@ def test_main_search_with_results_no_description():
     mock_results = [
         {"full_name": "user/tpl", "description": "", "stars": 0, "url": "", "updated_at": "", "name": "tpl"},
     ]
-    with patch("acorn.cli.search_all", return_value=mock_results):
+    with patch("acorn.commands.marketplace.search_all", return_value=mock_results):
         with patch.object(sys, "argv", ["acorn", "--search", "test"]):
             rc = main()
     assert rc == 0
 
 
 def test_main_search_no_results():
-    with patch("acorn.cli.search_all", return_value=[]):
-        with patch("acorn.cli.search_github", return_value=[]):
+    with patch("acorn.commands.marketplace.search_all", return_value=[]):
+        with patch("acorn.commands.marketplace.search_github", return_value=[]):
             with patch.object(sys, "argv", ["acorn", "--search", "test"]):
                 rc = main()
     assert rc == 2
@@ -552,21 +552,21 @@ def test_main_add_template_already_exists(tmp_path):
     (template_dir / "template.yaml").write_text("name: dup\ndescription: x\nversion: 1.0\nfiles: []\n")
     dest = tmp_path / "global" / "dup-template"
     dest.mkdir(parents=True)
-    with patch("acorn.cli.TEMPLATES_DIR", tmp_path / "global"):
+    with patch("acorn.commands.template_cmd.TEMPLATES_DIR", tmp_path / "global"):
         with patch.object(sys, "argv", ["acorn", "--add", str(template_dir)]):
             rc = main()
     assert rc != 0
 
 
 def test_main_install_success():
-    with patch("acorn.cli.install_from_github", return_value=True):
+    with patch("acorn.commands.marketplace.install_from_github", return_value=True):
         with patch.object(sys, "argv", ["acorn", "--install", "user/repo"]):
             rc = main()
     assert rc == 0
 
 
 def test_main_install_failure():
-    with patch("acorn.cli.install_from_github", return_value=None):
+    with patch("acorn.commands.marketplace.install_from_github", return_value=None):
         with patch.object(sys, "argv", ["acorn", "--install", "user/repo"]):
             rc = main()
     assert rc != 0
@@ -609,7 +609,7 @@ def test_main_template_dry_run(tmp_path):
 
 
 def test_main_check_update_failure():
-    with patch("acorn.cli.check_pypi_version", return_value=None):
+    with patch("acorn.commands.admin.check_pypi_version", return_value=None):
         with patch.object(sys, "argv", ["acorn", "--check-update"]):
             rc = main()
     assert rc != 0
@@ -668,7 +668,7 @@ def test_main_interactive_reject_then_select_digit(tmp_path):
     )
     inputs = iter(["1", "n", "1", ""])
     with patch.object(sys, "argv", ["acorn", "--dir", str(src), "--interactive"]):
-        with patch("acorn.cli.load_templates", return_value=[mock_tpl]):
+        with patch("acorn.commands.generate.load_templates", return_value=[mock_tpl]):
             with patch("builtins.input", side_effect=inputs):
                 rc = main()
     assert rc == 0
@@ -702,16 +702,16 @@ def test_main_no_match_noninteractive_nonempty(tmp_path):
 
 
 def test_main_check_update_available():
-    mock_result = {"current": "0.1.0", "latest": "99.99.99", "upgrade_available": True, "url": "https://pypi.org/project/acorn/"}
-    with patch("acorn.cli.check_pypi_version", return_value=mock_result):
+    mock_result = {"current": "0.2.0", "latest": "99.99.99", "upgrade_available": True, "url": "https://pypi.org/project/acorn/"}
+    with patch("acorn.commands.admin.check_pypi_version", return_value=mock_result):
         with patch.object(sys, "argv", ["acorn", "--check-update"]):
             rc = main()
     assert rc == 0
 
 
 def test_main_check_update_current():
-    mock_result = {"current": "0.1.0", "latest": "0.1.0", "upgrade_available": False, "url": "https://pypi.org/project/acorn/"}
-    with patch("acorn.cli.check_pypi_version", return_value=mock_result):
+    mock_result = {"current": "0.2.0", "latest": "0.2.0", "upgrade_available": False, "url": "https://pypi.org/project/acorn/"}
+    with patch("acorn.commands.admin.check_pypi_version", return_value=mock_result):
         with patch.object(sys, "argv", ["acorn", "--check-update"]):
             rc = main()
     assert rc == 0
@@ -811,7 +811,7 @@ def test_main_interactive_reject_then_out_of_range_digit(tmp_path):
     mock_tpl = Template(name="only-one", description="test", project_type="node", files=[])
     inputs = iter(["1", "n", "2", "", ""])
     with patch.object(sys, "argv", ["acorn", "--dir", str(src), "--interactive"]):
-        with patch("acorn.cli.load_templates", return_value=[mock_tpl]):
+        with patch("acorn.commands.generate.load_templates", return_value=[mock_tpl]):
             with patch("builtins.input", side_effect=inputs):
                 rc = main()
     assert rc == 0

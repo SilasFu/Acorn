@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "acorn"
-version = "0.1.0"
+version = "0.2.0"
 description = "智能项目初始化工具 - 自动检测项目类型、匹配模板、生成配置"
 readme = "README.md"
 license = "MIT"
@@ -45,7 +45,7 @@ acorn = "acorn.cli:main"
 [project.optional-dependencies]
 color = ["colorama"]
 network = ["requests"]
-advanced = ["jinja2"]
+advanced = ["jinja2", "tomli>=2.0"]
 dev = ["pytest>=7", "pytest-cov>=4", "ruff>=0.1"]
 
 [tool.hatch.build.targets.wheel]

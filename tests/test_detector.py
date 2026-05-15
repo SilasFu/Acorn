@@ -504,8 +504,8 @@ def test_detect_entry_files_sets_type_when_rules_miss(tmp_path):
     src.mkdir()
     (src / "manage.py").write_text("from django.conf import settings\n")
     from acorn.detector import detect_project_type
-    with patch("acorn.detector.load_detector_rules", return_value=[]):
-        with patch("acorn.detector.load_templates", return_value=[]):
+    with patch("acorn.analysis.detector.load_detector_rules", return_value=[]):
+        with patch("acorn.analysis.detector.load_templates", return_value=[]):
             result = detect_project_type(src)
     assert result.project_type == ProjectType.PYTHON
     assert result.confidence == 0.25
@@ -516,8 +516,8 @@ def test_detect_entry_files_no_override_when_manifest_higher(tmp_path):
     src.mkdir()
     (src / "Cargo.toml").write_text("[package]\nname = \"test\"\n")
     (src / "manage.py").write_text("")
-    with patch("acorn.detector.load_detector_rules", return_value=[]):
-        with patch("acorn.detector.load_templates", return_value=[]):
+    with patch("acorn.analysis.detector.load_detector_rules", return_value=[]):
+        with patch("acorn.analysis.detector.load_templates", return_value=[]):
             result = detect_project_type(src)
     assert result.project_type == ProjectType.RUST
 

@@ -36,3 +36,50 @@ commands:
   install_success: "Template '{{name}}' installed"
   install_fail: "Failed to install template '{{name}}'"
   search_results: "Search results for '{{query}}':"
+
+  # Doctor / report
+  doctor_title: "Project Report — {{project}}"
+  project_type: "Type: {{type}} (confidence: {{confidence}})"
+  confidence: "confidence"
+  ai_readiness: "AI Readiness"
+  devops: "DevOps"
+  code_quality: "Code Quality"
+  passed: "passed"
+  failed: "failed"
+  fix_prompt: "Fix all auto-fixable items?"
+
+  # Checks (present)
+  check_.cursorrules_present: "Exists"
+  check_CLAUDE.md_present: "Exists"
+  check_.github/copilot-instructions.md_present: "Exists"
+  check_Dockerfile_present: "Exists"
+  check_.dockerignore_present: "Exists"
+  check_.github/workflows/ci.yml_present: "Exists"
+  check_.gitignore_present: "Exists"
+
+  # Checks (absent)
+  check_.cursorrules_absent: "Missing — AI can't understand project conventions"
+  check_CLAUDE.md_absent: "Missing"
+  check_.github/copilot-instructions.md_absent: "Missing"
+  check_Dockerfile_absent: "Missing"
+  check_.dockerignore_absent: "Missing"
+  check_.github/workflows/ci.yml_absent: "Missing"
+  check_.gitignore_absent: "Missing"
+
+  # Fix
+  fix_generating: "Generating {{name}}..."
+  fix_generated: "Generated {{name}}"
+  fix_skipped: "Skipped {{name}} (already exists)"
+  fix_all_done: "All fixes complete"
+  fix_nothing: "Nothing to fix"
+
+  # Languages
+  language_node: "Node.js"
+  language_python: "Python"
+  language_go: "Go"
+  language_rust: "Rust"
+  language_java: "Java"
+  language_ruby: "Ruby"
+  language_php: "PHP"
+  language_deno: "Deno"
+  language_bun: "Bun"

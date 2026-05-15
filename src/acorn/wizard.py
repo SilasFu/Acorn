@@ -245,7 +245,7 @@ def cmd_wizard(reset: bool = False) -> int:
 
     args = parser.parse_args(ns_args[1:])
 
-    from acorn.cli import cmd_generate
+    from acorn.commands.generate import cmd_generate
     rc = cmd_generate(args)
 
     if rc == 0 and answers.get("open_editor"):

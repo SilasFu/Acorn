@@ -36,3 +36,50 @@ commands:
   install_success: "模板 '{{name}}' 安装成功"
   install_fail: "模板 '{{name}}' 安装失败"
   search_results: "搜索 '{{query}}' 的结果:"
+
+  # Doctor / report
+  doctor_title: "🔍 Acorn 项目报告 — {{project}}"
+  project_type: "类型: {{type}} (置信度: {{confidence}})"
+  confidence: "置信度"
+  ai_readiness: "🤖 AI 就绪"
+  devops: "🐳 DevOps"
+  code_quality: "📋 代码质量"
+  passed: "通过"
+  failed: "失败"
+  fix_prompt: "要修复所有可自动修复的问题吗？"
+
+  # Checks (present)
+  check_.cursorrules_present: "已存在"
+  check_CLAUDE.md_present: "已存在"
+  check_.github/copilot-instructions.md_present: "已存在"
+  check_Dockerfile_present: "已存在"
+  check_.dockerignore_present: "已存在"
+  check_.github/workflows/ci.yml_present: "已存在"
+  check_.gitignore_present: "已存在"
+
+  # Checks (absent)
+  check_.cursorrules_absent: "缺失，AI 无法了解项目约定"
+  check_CLAUDE.md_absent: "缺失"
+  check_.github/copilot-instructions.md_absent: "缺失"
+  check_Dockerfile_absent: "缺失"
+  check_.dockerignore_absent: "缺失"
+  check_.github/workflows/ci.yml_absent: "缺失"
+  check_.gitignore_absent: "缺失"
+
+  # Fix
+  fix_generating: "正在生成 {{name}}..."
+  fix_generated: "已生成 {{name}}"
+  fix_skipped: "跳过 {{name}} (已存在)"
+  fix_all_done: "修复完成"
+  fix_nothing: "没有需要修复的问题"
+
+  # Languages
+  language_node: "Node.js"
+  language_python: "Python"
+  language_go: "Go"
+  language_rust: "Rust"
+  language_java: "Java"
+  language_ruby: "Ruby"
+  language_php: "PHP"
+  language_deno: "Deno"
+  language_bun: "Bun"

@@ -23,7 +23,7 @@ class TestWizard:
 
         with (
             patch("builtins.input", lambda _="": next(inputs)),
-            patch("acorn.cli.cmd_generate", return_value=0),
+            patch("acorn.commands.generate.cmd_generate", return_value=0),
             patch("acorn.wizard.Path.cwd", return_value=tmp_path),
         ):
             rc = cmd_wizard()
@@ -39,7 +39,7 @@ class TestWizard:
 
         with (
             patch("builtins.input", lambda _="": next(inputs)),
-            patch("acorn.cli.cmd_generate", return_value=0),
+            patch("acorn.commands.generate.cmd_generate", return_value=0),
             patch("acorn.wizard.Path.cwd", return_value=tmp_path),
         ):
             rc = cmd_wizard()
@@ -54,7 +54,7 @@ class TestWizard:
         inputs = iter(["", "1", "", "", "", "n", "n"])
         with (
             patch("builtins.input", lambda _="": next(inputs)),
-            patch("acorn.cli.cmd_generate", return_value=0),
+            patch("acorn.commands.generate.cmd_generate", return_value=0),
         ):
             rc = cmd_wizard(reset=True)
         assert rc == 0
@@ -68,7 +68,7 @@ class TestDockerize:
         args = argparse.Namespace(dir=str(tmp_path), force=False, dry_run=False, regenerate=False,
                                   verbose=False, debug=False, quiet=False, offline=False, lang="en",
                                   config=None)
-        with patch("acorn.cli.detect_project_type") as mock_detect:
+        with patch("acorn.commands.docker.detect_project_type") as mock_detect:
             from acorn.models import DetectionResult, ProjectType
             mock_detect.return_value = DetectionResult(
                 project_type=ProjectType.NODE, matched_template="node-api",
@@ -96,7 +96,7 @@ class TestDockerize:
         args = argparse.Namespace(dir=str(tmp_path), force=False, dry_run=False, regenerate=False,
                                   verbose=False, debug=False, quiet=False, offline=False, lang="en",
                                   config=None)
-        with patch("acorn.cli.detect_project_type") as mock_detect:
+        with patch("acorn.commands.docker.detect_project_type") as mock_detect:
             from acorn.models import DetectionResult, ProjectType
             mock_detect.return_value = DetectionResult(
                 project_type=ProjectType.NODE, matched_template="node-api",
@@ -116,7 +116,7 @@ class TestDockerize:
         args = argparse.Namespace(dir=str(tmp_path), force=True, dry_run=False, regenerate=False,
                                   verbose=False, debug=False, quiet=False, offline=False, lang="en",
                                   config=None)
-        with patch("acorn.cli.detect_project_type") as mock_detect:
+        with patch("acorn.commands.docker.detect_project_type") as mock_detect:
             from acorn.models import DetectionResult, ProjectType
             mock_detect.return_value = DetectionResult(
                 project_type=ProjectType.NODE, matched_template="node-api",
@@ -136,7 +136,7 @@ class TestAddCI:
         args = argparse.Namespace(dir=str(tmp_path), force=False, dry_run=False,
                                   verbose=False, debug=False, quiet=False, offline=False, lang="en",
                                   config=None)
-        with patch("acorn.cli.detect_project_type") as mock_detect:
+        with patch("acorn.commands.docker.detect_project_type") as mock_detect:
             from acorn.models import DetectionResult, ProjectType
             mock_detect.return_value = DetectionResult(
                 project_type=ProjectType.NODE, matched_template="node-api",
@@ -313,7 +313,7 @@ def test_cmd_validate_ai_context_all_valid():
             ),
         ),
     ]
-    with patch("acorn.cli.load_templates", return_value=templates):
+    with patch("acorn.commands.template_cmd.load_templates", return_value=templates):
         rc = cmd_validate_ai_context()
     assert rc == 0
 
@@ -330,7 +330,7 @@ def test_cmd_validate_ai_context_missing_field():
             ),
         ),
     ]
-    with patch("acorn.cli.load_templates", return_value=templates):
+    with patch("acorn.commands.template_cmd.load_templates", return_value=templates):
         rc = cmd_validate_ai_context()
     assert rc != 0
 
@@ -345,7 +345,7 @@ def test_cmd_validate_ai_context_no_ai_context():
             ai_context=None,
         ),
     ]
-    with patch("acorn.cli.load_templates", return_value=templates):
+    with patch("acorn.commands.template_cmd.load_templates", return_value=templates):
         rc = cmd_validate_ai_context()
     assert rc != 0
 
