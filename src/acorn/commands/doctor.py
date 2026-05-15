@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
 from acorn.analysis.health import diagnose
 from acorn.analysis.health_rules import CheckCategory, CheckPriority
 from acorn.analysis.insights import has_source_code
+from acorn import __version__
 from acorn.config import load_config
 from acorn.format import color, confirm_or_exit, EXIT_SUCCESS
 from acorn.i18n import detect_language, set_language, t
@@ -52,6 +54,32 @@ def _display_report(report) -> None:
           f"{color('✗', 'red')} {s['failed']} {_msg('messages.failed', 'failed')}")
 
 
+VERSION_CHECK_FILE = Path.home() / ".acorn" / "version-check.json"
+
+
+def _check_version() -> None:
+    from acorn.check_update import check_pypi_version
+    VERSION_CHECK_FILE.parent.mkdir(parents=True, exist_ok=True)
+    if VERSION_CHECK_FILE.exists():
+        try:
+            data = json.loads(VERSION_CHECK_FILE.read_text())
+            import time
+            if time.time() - data.get("checked", 0) < 86400:
+                return
+        except (OSError, json.JSONDecodeError):
+            pass
+    result = check_pypi_version(offline=False)
+    if result and result["upgrade_available"]:
+        print(f"\n  {color('⟳', 'yellow')} {_msg('messages.update_available', 'Update available')}: "
+              f"v{__version__} → {color('v' + result['latest'], 'green')}")
+        print(f"    {result['url']}")
+    try:
+        import time
+        VERSION_CHECK_FILE.write_text(json.dumps({"checked": time.time()}))
+    except OSError:
+        pass
+
+
 def cmd_doctor() -> int:
     cwd = Path.cwd()
 
@@ -75,6 +103,8 @@ def cmd_doctor() -> int:
         return EXIT_SUCCESS
 
     _display_report(report)
+
+    _check_version()
 
     failed_auto = [c for c in report.checks if not c.status and c.auto_fixable]
     if failed_auto:

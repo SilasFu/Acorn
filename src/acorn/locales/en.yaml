@@ -83,3 +83,6 @@ commands:
   language_php: "PHP"
   language_deno: "Deno"
   language_bun: "Bun"
+
+  # Version
+  update_available: "Update available"
