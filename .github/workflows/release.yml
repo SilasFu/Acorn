@@ -39,6 +39,13 @@ jobs:
             --add-data "src/acorn/templates:acorn/templates" \
             --add-data "src/acorn/detectors:acorn/detectors" \
             --add-data "src/acorn/locales:acorn/locales" \
+            --hidden-import acorn.json_output \
+            --hidden-import acorn.analysis.health \
+            --hidden-import acorn.analysis.health_rules \
+            --hidden-import acorn.analysis.insights \
+            --hidden-import acorn.commands.doctor \
+            --hidden-import acorn.commands.fix \
+            --hidden-import acorn.generators.builtin \
             src/acorn/cli.py
       - name: Smoke test
         shell: bash
