@@ -20,6 +20,15 @@ variables:
     default: "1"
     prompt: "Deno 版本"
 
+ai_context:
+  cursor_rules:
+    tech_stack: "Deno {{deno_version}}, TypeScript, Web Standard APIs"
+    conventions:
+      - "Use ES modules with import/export"
+      - "Use deno.json for project configuration"
+      - "Use Web API standards (fetch, Request, Response)"
+      - "Use deno test for testing"
+
 files:
   - Dockerfile
   - docker-compose.yml

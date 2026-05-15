@@ -19,6 +19,15 @@ variables:
     default: "20"
     prompt: Node.js version
 
+ai_context:
+  cursor_rules:
+    tech_stack: "Node.js {{node_version}}, Express 4, Jest"
+    conventions:
+      - "Use CommonJS modules"
+      - "Error handling with try/catch"
+      - "Use environment variables for configuration"
+      - "Use Jest for unit testing"
+
 files:
   - Dockerfile
   - docker-compose.yml

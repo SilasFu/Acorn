@@ -968,3 +968,86 @@ def test_generate_from_template_files_dir_regenerate_no_backup(tmp_path):
         with patch("acorn.template_engine.resolve_template", return_value=tpl):
             options = GenerationOptions(regenerate=True)
             generate_from_template("test", out_dir, options)
+
+
+def test_generate_cursorrules_with_ai_context(tmp_path):
+    from acorn.models import AIContext, CursorRules
+    tpl_path = tmp_path / "tpl"
+    tpl_path.mkdir()
+    (tpl_path / "template.yaml").write_text(
+        "name: test\ndescription: x\nversion: 1.0\ntype: node\nfiles: []\n"
+    )
+    with patch("acorn.template_engine.find_template_by_name") as mock_find:
+        tpl = Template(
+            name="test",
+            path=tpl_path,
+            project_type="node",
+            files=[],
+            ai_context=AIContext(
+                cursor_rules=CursorRules(
+                    tech_stack="Node.js 20, Express 4",
+                    conventions=["Use CommonJS modules", "Error handling with try/catch"],
+                )
+            ),
+        )
+        mock_find.return_value = tpl
+        with patch("acorn.template_engine.resolve_template", return_value=tpl):
+            out_dir = tmp_path / "out"
+            out_dir.mkdir()
+            options = GenerationOptions()
+            generate_from_template("test", out_dir, options)
+    cursor_file = out_dir / ".cursorrules"
+    assert cursor_file.exists()
+    content = cursor_file.read_text()
+    assert "Node.js 20, Express 4" in content
+    assert "Use CommonJS modules" in content
+    assert "Error handling with try/catch" in content
+
+
+def test_generate_cursorrules_skips_when_no_ai_context(tmp_path):
+    tpl_path = tmp_path / "tpl"
+    tpl_path.mkdir()
+    (tpl_path / "template.yaml").write_text(
+        "name: test\ndescription: x\nversion: 1.0\ntype: node\nfiles: []\n"
+    )
+    with patch("acorn.template_engine.find_template_by_name") as mock_find:
+        tpl = Template(name="test", path=tpl_path, project_type="node", files=[])
+        mock_find.return_value = tpl
+        with patch("acorn.template_engine.resolve_template", return_value=tpl):
+            out_dir = tmp_path / "out"
+            out_dir.mkdir()
+            options = GenerationOptions()
+            generate_from_template("test", out_dir, options)
+    cursor_file = out_dir / ".cursorrules"
+    assert not cursor_file.exists()
+
+
+def test_generate_cursorrules_skips_existing(tmp_path):
+    from acorn.models import AIContext, CursorRules
+    tpl_path = tmp_path / "tpl"
+    tpl_path.mkdir()
+    (tpl_path / "template.yaml").write_text(
+        "name: test\ndescription: x\nversion: 1.0\ntype: node\nfiles: []\n"
+    )
+    with patch("acorn.template_engine.find_template_by_name") as mock_find:
+        tpl = Template(
+            name="test",
+            path=tpl_path,
+            project_type="node",
+            files=[],
+            ai_context=AIContext(
+                cursor_rules=CursorRules(
+                    tech_stack="Node.js 20",
+                    conventions=[],
+                )
+            ),
+        )
+        mock_find.return_value = tpl
+        with patch("acorn.template_engine.resolve_template", return_value=tpl):
+            out_dir = tmp_path / "out"
+            out_dir.mkdir()
+            (out_dir / ".cursorrules").write_text("existing")
+            options = GenerationOptions()
+            generate_from_template("test", out_dir, options)
+    cursor_content = (out_dir / ".cursorrules").read_text()
+    assert cursor_content == "existing"

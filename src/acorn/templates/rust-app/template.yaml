@@ -20,6 +20,15 @@ variables:
     default: "1.77"
     prompt: "Rust 版本 / Rust version"
 
+ai_context:
+  cursor_rules:
+    tech_stack: "Rust {{rust_version}}, Axum/Actix-Web, Tokio"
+    conventions:
+      - "Use cargo for dependency management"
+      - "Use async/await with Tokio runtime"
+      - "Use strong typing and ownership model"
+      - "Use cargo test for testing"
+
 files:
   - Dockerfile
   - docker-compose.yml

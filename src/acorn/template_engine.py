@@ -12,6 +12,7 @@ from typing import Any
 import yaml
 
 from acorn.config import (
+    add_to_manifest,
     find_template_by_name,
     load_templates,
     resolve_template,
@@ -19,6 +20,7 @@ from acorn.config import (
     save_template_to_global,
 )
 from acorn.models import GenerationOptions, Hooks, Template, TemplateVariable
+from acorn.progress import Spinner
 
 VARIABLE_PATTERN = re.compile(r"\{\{(\w+)\}\}")
 IF_PATTERN = re.compile(r"\{\{#if\s+(\w+)\}\}(.*?)\{\{/if\}\}", re.DOTALL)
@@ -225,20 +227,62 @@ def run_hooks(hooks: Hooks, stage: str, **context: Any) -> None:
         print(f"  ⚠ Hook '{stage}' command not found")
 
 
+def _generate_cursorrules(
+    output_dir: Path,
+    template: Template,
+    variables: dict[str, str],
+) -> Path | None:
+    if not template.ai_context:
+        return None
+    rules = template.ai_context.cursor_rules
+    if not rules.tech_stack and not rules.conventions:
+        return None
+
+    lines = ["You are an expert in the following technology stack.", ""]
+    if rules.tech_stack:
+        rendered_stack = render_template(rules.tech_stack, variables)
+        lines.append(f"Tech Stack: {rendered_stack}")
+        lines.append("")
+    if rules.conventions:
+        lines.append("Key Conventions:")
+        for convention in rules.conventions:
+            rendered = render_template(convention, variables)
+            lines.append(f"- {rendered}")
+        lines.append("")
+
+    content = "\n".join(lines)
+    dest = output_dir / ".cursorrules"
+
+    if dest.exists():
+        print("  ⚠ Skipping .cursorrules (already exists)")
+        return None
+
+    dest.write_text(content, encoding="utf-8")
+    print("  ✓ Generated: .cursorrules")
+    return dest
+
+
+DOCKER_FILES = {"Dockerfile", "docker-compose.yml", ".dockerignore"}
+
+
 def generate_from_template(
     template_name: str,
     output_dir: Path | str,
     options: GenerationOptions,
+    only: set[str] | None = None,
+    template: Template | None = None,
 ) -> list[Path]:
     if isinstance(output_dir, str):
         output_dir = Path(output_dir).resolve()
 
-    template = find_template_by_name(template_name)
-    if not template:
-        print(f"✗ Template '{template_name}' not found")
-        return []
-
-    resolved = resolve_template(template)
+    if template is None:
+        template = find_template_by_name(template_name)
+        if not template:
+            print(f"✗ Template '{template_name}' not found")
+            return []
+        resolved = resolve_template(template)
+    else:
+        resolved = template
 
     if not resolved.path:
         print(f"✗ Template '{template_name}' has no path")
@@ -258,8 +302,13 @@ def generate_from_template(
 
     run_hooks(resolved.hooks, "before", variables=variables)
 
+    spinner = Spinner(f"Generating from template '{resolved.name}'...")
+    if not options.verbose and not options.debug:
+        spinner.start()
     generated: list[Path] = []
     for rel_path in resolved.files:
+        if only and rel_path not in only:
+            continue
         result = generate_file(resolved.path, rel_path, output_dir, variables, options)
         if result:
             generated.append(result)
@@ -269,6 +318,8 @@ def generate_from_template(
         for item in files_dir.rglob("*"):
             if item.is_file():
                 rel = item.relative_to(files_dir)
+                if only and rel.name not in only:
+                    continue
                 rendered_content = item.read_text(encoding="utf-8")
                 rendered_content = render_template(rendered_content, variables)
                 dest = output_dir / rel
@@ -276,17 +327,27 @@ def generate_from_template(
 
     run_hooks(resolved.hooks, "after", variables=variables)
 
+    if resolved.ai_context and not options.dry_run:
+        cursor_path = _generate_cursorrules(output_dir, resolved, variables)
+        if cursor_path:
+            generated.append(cursor_path)
+
+    if not options.verbose and not options.debug:
+        spinner.stop()
     summary = "Dry run" if options.dry_run else "Generated"
+    rel_files = [str(g.relative_to(output_dir)) for g in generated]
     print(f"\n{summary} {len(generated)} file(s)")
 
     if not options.dry_run and generated:
+        rel_files = [str(g.relative_to(output_dir)) for g in generated]
         lock_data = {
             "template": resolved.name,
             "version": resolved.version,
             "variables": variables,
-            "files": [str(g.relative_to(output_dir)) for g in generated],
+            "files": rel_files,
         }
         save_project_lock(output_dir, lock_data)
+        add_to_manifest(output_dir, rel_files, resolved.name)
 
     return generated
 

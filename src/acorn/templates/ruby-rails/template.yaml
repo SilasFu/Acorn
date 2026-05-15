@@ -28,6 +28,15 @@ variables:
       - mysql
       - sqlite
 
+ai_context:
+  cursor_rules:
+    tech_stack: "Ruby {{ruby_version}}, Ruby on Rails, {{database}}"
+    conventions:
+      - "Follow Rails convention over configuration"
+      - "Use ActiveRecord for database interactions"
+      - "Use RSpec for testing"
+      - "Use ERB or Haml for views"
+
 files:
   - Dockerfile
   - docker-compose.yml

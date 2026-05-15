@@ -26,6 +26,15 @@ variables:
       - maven
       - gradle
 
+ai_context:
+  cursor_rules:
+    tech_stack: "Java {{java_version}}, Spring Boot, {{build_tool}}"
+    conventions:
+      - "Use annotation-based configuration"
+      - "Use constructor injection for dependencies"
+      - "Use JPA repositories for data access"
+      - "Use JUnit 5 with Mockito for testing"
+
 files:
   - Dockerfile
   - docker-compose.yml

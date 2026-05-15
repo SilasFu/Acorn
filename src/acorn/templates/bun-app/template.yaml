@@ -19,6 +19,15 @@ variables:
     default: "1"
     prompt: "Bun 版本"
 
+ai_context:
+  cursor_rules:
+    tech_stack: "Bun {{bun_version}}, TypeScript, ESM"
+    conventions:
+      - "Use Bun's built-in test runner"
+      - "Use TypeScript by default"
+      - "Use Bun's SQLite client for data storage"
+      - "Use fetch API for HTTP requests"
+
 files:
   - Dockerfile
   - docker-compose.yml

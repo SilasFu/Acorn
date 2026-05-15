@@ -19,6 +19,15 @@ variables:
     default: "20"
     prompt: Node.js version
 
+ai_context:
+  cursor_rules:
+    tech_stack: "React 18, Vite, TypeScript, ESModules"
+    conventions:
+      - "Use functional components with hooks"
+      - "Use TypeScript for all source files"
+      - "Use CSS modules or Tailwind for styling"
+      - "Use React Router for client-side routing"
+
 files:
   - Dockerfile
   - .env.example

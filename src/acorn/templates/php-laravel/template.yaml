@@ -20,6 +20,15 @@ variables:
     default: "8.3"
     prompt: "PHP 版本"
 
+ai_context:
+  cursor_rules:
+    tech_stack: "PHP {{php_version}}, Laravel, Eloquent ORM, Blade"
+    conventions:
+      - "Use artisan CLI for code generation"
+      - "Use Eloquent ORM for database queries"
+      - "Use Blade templates for views"
+      - "Use PHPUnit for testing"
+
 files:
   - Dockerfile
   - docker-compose.yml

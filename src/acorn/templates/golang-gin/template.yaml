@@ -18,6 +18,15 @@ variables:
     default: "1.22"
     prompt: Go version
 
+ai_context:
+  cursor_rules:
+    tech_stack: "Go {{go_version}}, Gin Web Framework"
+    conventions:
+      - "Use standard Go project layout"
+      - "Use go.mod for dependency management"
+      - "Use net/http style handler signatures"
+      - "Use table-driven tests with testing package"
+
 files:
   - Dockerfile
   - docker-compose.yml

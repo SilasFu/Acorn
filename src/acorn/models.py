@@ -88,6 +88,17 @@ class Hooks:
 
 
 @dataclass
+class CursorRules:
+    tech_stack: str = ""
+    conventions: list[str] = field(default_factory=list)
+
+
+@dataclass
+class AIContext:
+    cursor_rules: CursorRules = field(default_factory=CursorRules)
+
+
+@dataclass
 class Template:
     name: str
     description: str = ""
@@ -102,6 +113,9 @@ class Template:
     locked_variables: dict[str, str] = field(default_factory=dict)
     hooks: Hooks = field(default_factory=Hooks)
     min_tool_version: str | None = None
+    ai_context: AIContext | None = None
+    provides: list[str] = field(default_factory=list)
+    requires: list[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: dict, path: Path | None = None) -> Template:
@@ -126,6 +140,16 @@ class Template:
             before_detect=hooks_data.get("before_detect"),
             after_detect=hooks_data.get("after_detect"),
         )
+        ai_data = data.get("ai_context", {})
+        cursor_data = ai_data.get("cursor_rules", {}) if ai_data else {}
+        ai_context = None
+        if cursor_data:
+            ai_context = AIContext(
+                cursor_rules=CursorRules(
+                    tech_stack=cursor_data.get("tech_stack", ""),
+                    conventions=cursor_data.get("conventions", []),
+                )
+            )
         return cls(
             name=data["name"],
             description=data.get("description", ""),
@@ -140,10 +164,13 @@ class Template:
             locked_variables=data.get("locked_variables", {}),
             hooks=hooks,
             min_tool_version=data.get("min_tool_version"),
+            ai_context=ai_context,
+            provides=data.get("provides", []),
+            requires=data.get("requires", []),
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result: dict[str, Any] = {
             "name": self.name,
             "description": self.description,
             "version": self.version,
@@ -164,6 +191,18 @@ class Template:
             "extends": self.extends,
             "files": self.files,
         }
+        if self.ai_context and (self.ai_context.cursor_rules.tech_stack or self.ai_context.cursor_rules.conventions):
+            result["ai_context"] = {
+                "cursor_rules": {
+                    "tech_stack": self.ai_context.cursor_rules.tech_stack,
+                    "conventions": self.ai_context.cursor_rules.conventions,
+                }
+            }
+        if self.provides:
+            result["provides"] = self.provides
+        if self.requires:
+            result["requires"] = self.requires
+        return result
 
 
 @dataclass

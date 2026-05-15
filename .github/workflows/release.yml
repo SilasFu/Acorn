@@ -58,10 +58,26 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           pattern: acorn-*
           merge-multiple: true
+      - name: Generate Homebrew formula
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          ARM64_SHA=$(sha256sum acorn-macos-arm64 | cut -d' ' -f1)
+          AMD64_SHA=$(sha256sum acorn-macos-amd64 | cut -d' ' -f1)
+          LINUX_SHA=$(sha256sum acorn-linux-amd64 | cut -d' ' -f1)
+          WINDOWS_SHA=$(sha256sum acorn-windows-amd64.exe | cut -d' ' -f1)
+
+          sed -e "s/REPLACE_ME_ARM64/$ARM64_SHA/g" \
+              -e "s/REPLACE_ME_AMD64/$AMD64_SHA/g" \
+              -e "s/REPLACE_ME_LINUX/$LINUX_SHA/g" \
+              -e "s/REPLACE_ME_WINDOWS/$WINDOWS_SHA/g" \
+              -e "s/version \"0.1.0\"/version \"$VERSION\"/g" \
+              Formula/acorn.rb > acorn.rb
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -70,4 +86,5 @@ jobs:
             acorn-macos-arm64
             acorn-macos-amd64
             acorn-windows-amd64.exe
+            acorn.rb
           generate_release_notes: true

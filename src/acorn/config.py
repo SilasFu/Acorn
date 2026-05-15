@@ -13,6 +13,7 @@ TEMPLATES_DIR = GLOBAL_DIR / "templates"
 DETECTORS_DIR = GLOBAL_DIR / "detectors"
 CACHE_DIR = GLOBAL_DIR / "cache"
 CONFIG_FILE = GLOBAL_DIR / "config.yaml"
+MANIFEST_FILE = GLOBAL_DIR / "manifest.json"
 PROJECT_CONFIG_DIR = Path(".acorn")
 PROJECT_CONFIG_FILE = PROJECT_CONFIG_DIR / "config.yaml"
 PROJECT_LOCK_FILE = PROJECT_CONFIG_DIR / "lock.yaml"
@@ -32,6 +33,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "debug": False,
     "offline": False,
     "log_level": "INFO",
+    "telemetry_enabled": False,
 }
 
 
@@ -104,6 +106,13 @@ def load_templates() -> list[Template]:
 def find_template_by_name(name: str) -> Template | None:
     for t in load_templates():
         if t.name == name:
+            return t
+    return None
+
+
+def find_template_by_project_type(project_type: ProjectType) -> Template | None:
+    for t in load_templates():
+        if t.project_type == project_type:
             return t
     return None
 
@@ -238,3 +247,38 @@ def import_config(target: Path, source: Path) -> dict[str, Any] | None:
 
     print(f"✓ Config imported from {source} to {target}")
     return data
+
+
+def load_manifest() -> dict[str, Any]:
+    ensure_dirs()
+    if MANIFEST_FILE.exists():
+        try:
+            import json
+            return json.loads(MANIFEST_FILE.read_text())
+        except (json.JSONDecodeError, OSError):
+            return {}
+    return {}
+
+
+def save_manifest(manifest: dict[str, Any]) -> None:
+    import json
+    MANIFEST_FILE.parent.mkdir(parents=True, exist_ok=True)
+    MANIFEST_FILE.write_text(json.dumps(manifest, indent=2, ensure_ascii=False))
+
+
+def add_to_manifest(project_path: Path, files: list[str], template_name: str) -> None:
+    manifest = load_manifest()
+    key = str(project_path.resolve())
+    manifest[key] = {
+        "generated_at": __import__("datetime").datetime.now().isoformat(),
+        "files": files,
+        "template": template_name,
+    }
+    save_manifest(manifest)
+
+
+def remove_from_manifest(project_path: Path) -> None:
+    manifest = load_manifest()
+    key = str(project_path.resolve())
+    manifest.pop(key, None)
+    save_manifest(manifest)

@@ -20,6 +20,15 @@ variables:
     default: "3.12"
     prompt: Python version
 
+ai_context:
+  cursor_rules:
+    tech_stack: "Python {{python_version}}, FastAPI, Uvicorn, Pydantic"
+    conventions:
+      - "Use async/await for all route handlers"
+      - "Use Pydantic models for request/response validation"
+      - "Use type hints for all function signatures"
+      - "Use pytest with httpx for async testing"
+
 files:
   - Dockerfile
   - docker-compose.yml
