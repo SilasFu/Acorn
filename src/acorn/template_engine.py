@@ -6,6 +6,7 @@ import shutil
 import subprocess
 from datetime import datetime
 from pathlib import Path
+from tempfile import gettempdir
 from typing import Any
 
 import yaml
@@ -327,7 +328,7 @@ def save_as_template_from_project(
     if description is None:
         description = f"Template saved from {output_dir.name}"
 
-    template_dir = Path("/tmp") / f".init-template-{name}"
+    template_dir = Path(gettempdir()) / f".init-template-{name}"
     template_dir.mkdir(parents=True, exist_ok=True)
 
     template_yaml = template_dir / "template.yaml"

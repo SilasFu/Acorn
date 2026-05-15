@@ -5,6 +5,7 @@ from typing import Any
 
 import yaml
 
+from acorn._compat import resource_path
 from acorn.models import DetectorRule, ProjectType, Template
 
 GLOBAL_DIR = Path.home() / ".acorn"
@@ -16,8 +17,8 @@ PROJECT_CONFIG_DIR = Path(".acorn")
 PROJECT_CONFIG_FILE = PROJECT_CONFIG_DIR / "config.yaml"
 PROJECT_LOCK_FILE = PROJECT_CONFIG_DIR / "lock.yaml"
 
-BUILTIN_TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
-BUILTIN_DETECTORS_DIR = Path(__file__).resolve().parent / "detectors"
+BUILTIN_TEMPLATES_DIR = resource_path("templates")
+BUILTIN_DETECTORS_DIR = resource_path("detectors")
 
 DEFAULT_CONFIG: dict[str, Any] = {
     "templates_dir": str(TEMPLATES_DIR),

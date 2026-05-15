@@ -7,7 +7,9 @@ from typing import Any
 
 import yaml
 
-LOCALES_DIR = Path(__file__).resolve().parent / "locales"
+from acorn._compat import resource_path
+
+LOCALES_DIR = resource_path("locales")
 
 _current_lang: str = "en"
 _translations: dict[str, Any] = {}
