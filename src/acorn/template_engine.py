@@ -227,41 +227,6 @@ def run_hooks(hooks: Hooks, stage: str, **context: Any) -> None:
         print(f"  ⚠ Hook '{stage}' command not found")
 
 
-def _generate_cursorrules(
-    output_dir: Path,
-    template: Template,
-    variables: dict[str, str],
-) -> Path | None:
-    if not template.ai_context:
-        return None
-    rules = template.ai_context.cursor_rules
-    if not rules.tech_stack and not rules.conventions:
-        return None
-
-    lines = ["You are an expert in the following technology stack.", ""]
-    if rules.tech_stack:
-        rendered_stack = render_template(rules.tech_stack, variables)
-        lines.append(f"Tech Stack: {rendered_stack}")
-        lines.append("")
-    if rules.conventions:
-        lines.append("Key Conventions:")
-        for convention in rules.conventions:
-            rendered = render_template(convention, variables)
-            lines.append(f"- {rendered}")
-        lines.append("")
-
-    content = "\n".join(lines)
-    dest = output_dir / ".cursorrules"
-
-    if dest.exists():
-        print("  ⚠ Skipping .cursorrules (already exists)")
-        return None
-
-    dest.write_text(content, encoding="utf-8")
-    print("  ✓ Generated: .cursorrules")
-    return dest
-
-
 DOCKER_FILES = {"Dockerfile", "docker-compose.yml", ".dockerignore"}
 
 
@@ -326,11 +291,6 @@ def generate_from_template(
                 _write_generated_file(rel, dest, rendered_content, options, generated)
 
     run_hooks(resolved.hooks, "after", variables=variables)
-
-    if resolved.ai_context and not options.dry_run:
-        cursor_path = _generate_cursorrules(output_dir, resolved, variables)
-        if cursor_path:
-            generated.append(cursor_path)
 
     if not options.verbose and not options.debug:
         spinner.stop()
@@ -475,63 +435,23 @@ def _get_default_files(project_type: str) -> list[str]:
 
 
 def _generate_default_content(rel_path: str, project_type: str, variables: dict[str, str]) -> str | None:
-    if rel_path == "Dockerfile":
-        return _generate_dockerfile(project_type, variables)
-    elif rel_path == "docker-compose.yml":
-        return _generate_docker_compose(project_type, variables)
-    elif rel_path == ".env.example":
+    from acorn.generators.builtin import generate_file_content
+
+    supported = {"Dockerfile", "docker-compose.yml", ".gitignore", ".dockerignore"}
+    if rel_path in supported:
+        return generate_file_content(rel_path, project_type, variables)
+
+    if rel_path == ".env.example":
         return "# Environment Variables\nPORT={{port}}\n# Generated: {{date}}\n"
     elif rel_path == ".nvmrc":
         return "{{node_version}}\n"
     elif rel_path == ".python-version":
         return "3.12\n"
-    elif rel_path == ".gitignore":
-        return _generate_gitignore(project_type)
     elif rel_path == "Makefile":
         return _generate_makefile(project_type)
     elif rel_path == ".devcontainer/devcontainer.json":
         return _generate_devcontainer(project_type)
     return None
-
-
-def _generate_dockerfile(project_type: str, variables: dict[str, str]) -> str:
-    dockerfiles = {
-        "node": f"FROM node:{variables.get('node_version', '20')}-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci\nCOPY . .\nEXPOSE {variables.get('port', '3000')}\nCMD [\"node\", \"index.js\"]\n",
-        "python": "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt ./\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nEXPOSE 8000\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]\n",
-        "go": "FROM golang:1.22-alpine AS builder\nWORKDIR /app\nCOPY go.mod go.sum ./\nRUN go mod download\nCOPY . .\nRUN CGO_ENABLED=0 go build -o /app/server\n\nFROM alpine:latest\nCOPY --from=builder /app/server /server\nEXPOSE 8080\nCMD [\"/server\"]\n",
-        "rust": "FROM rust:1.77-slim AS builder\nWORKDIR /app\nCOPY . .\nRUN cargo build --release\n\nFROM debian:bookworm-slim\nCOPY --from=builder /app/target/release/app /app\nEXPOSE 8080\nCMD [\"/app\"]\n",
-        "java": "FROM eclipse-temurin:21-jdk AS builder\nWORKDIR /app\nCOPY . .\nRUN ./mvnw package -DskipTests\n\nFROM eclipse-temurin:21-jre\nCOPY --from=builder /app/target/*.jar /app.jar\nEXPOSE 8080\nCMD [\"java\", \"-jar\", \"/app.jar\"]\n",
-        "ruby": "FROM ruby:3.3-slim\nWORKDIR /app\nCOPY Gemfile Gemfile.lock ./\nRUN bundle install\nCOPY . .\nEXPOSE 3000\nCMD [\"ruby\", \"app.rb\"]\n",
-        "php": "FROM php:8.3-cli\nWORKDIR /app\nCOPY . .\nEXPOSE 8000\nCMD [\"php\", \"-S\", \"0.0.0.0:8000\", \"-t\", \"public\"]\n",
-    }
-    return dockerfiles.get(project_type, f"FROM {project_type}:latest\nWORKDIR /app\nCOPY . .\nCMD [\"sh\"]\n")
-
-
-def _generate_docker_compose(project_type: str, variables: dict[str, str]) -> str:
-    port = variables.get("port", "3000")
-    return f"""version: "3.8"
-services:
-  app:
-    build: .
-    ports:
-      - "{port}:{port}"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=development
-"""
-
-
-def _generate_gitignore(project_type: str) -> str:
-    ignores = {
-        "node": "node_modules/\ndist/\n.env\n*.log\n",
-        "python": "__pycache__/\n*.pyc\n.venv/\nvenv/\n.env\n*.egg-info/\ndist/\n",
-        "go": "vendor/\n*.exe\n*.exe~\n*.dll\n*.so\n*.dylib\n",
-        "rust": "target/\nCargo.lock\n",
-        "java": "target/\n*.class\n*.jar\n*.war\n.idea/\n",
-    }
-    return ignores.get(project_type, ".env\n__pycache__/\n*.log\ndist/\n")
 
 
 def _generate_makefile(project_type: str) -> str:

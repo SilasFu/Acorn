@@ -10,3 +10,15 @@ def resource_path(relative: str) -> Path:
     else:
         base = Path(__file__).resolve().parent
     return base / relative
+
+
+# ── tomllib compatibility (Python 3.10) ──
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    try:
+        import tomli as tomllib  # type: ignore[no-redef]
+    except ImportError:
+        tomllib = None  # type: ignore[assignment]
+
+__all__ = ["resource_path", "tomllib"]
