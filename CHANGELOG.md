@@ -1,5 +1,11 @@
 # Changelog / 更新日志
 
+## [0.3.1] - 2026-05-16
+
+- CI fix: use bash shell for PyInstaller on Windows. / CI 修复：Windows 构建使用 bash shell。
+- CI fix: match any version in Homebrew formula sed. / CI 修复：Homebrew formula 版本替换支持正则。
+- Homebrew formula: 0.2.0 → 0.1.0 placeholder for CI replacement. / Homebrew formula 占位符版本统一。
+
 ## [0.3.0] - 2026-05-15
 
 - Phase 2: Deep AI context generation with 15+ analysis dimensions (import style, module system, naming convention, state management, styling approach, API style, architecture pattern, directory purposes). / 深度 AI 上下文生成，15+ 分析维度。
