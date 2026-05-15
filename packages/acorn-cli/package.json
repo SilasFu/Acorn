@@ -1,0 +1,25 @@
+{
+  "name": "@acorn-dev/cli",
+  "version": "0.3.0",
+  "description": "Acorn CLI — AI coding environment optimizer (npx wrapper)",
+  "bin": {
+    "acorn": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SilasFu/Acorn.git"
+  },
+  "keywords": ["acorn", "ai", "cursor", "claude", "copilot", "project-setup"],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SilasFu/Acorn/issues"
+  },
+  "homepage": "https://github.com/SilasFu/Acorn",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": ["index.js"]
+}

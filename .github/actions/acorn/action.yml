@@ -1,0 +1,51 @@
+name: "Acorn AI Context Check"
+description: "Check and update AI context files (.cursorrules, CLAUDE.md, copilot-instructions.md) in CI"
+author: "SilasFu"
+
+inputs:
+  mode:
+    description: "Operation mode: sync (check stale), doctor (health report), fix (generate missing)"
+    required: false
+    default: "sync"
+  work-dir:
+    description: "Working directory (project root)"
+    required: false
+    default: "."
+  python-version:
+    description: "Python version to install acorn with"
+    required: false
+    default: "3.12"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install acorn
+      shell: bash
+      run: |
+        pip install acorn
+
+    - name: Run acorn doctor
+      shell: bash
+      if: inputs.mode == 'doctor'
+      run: |
+        acorn --dir "${{ inputs.work-dir }}"
+        echo "status=checked" >> $GITHUB_OUTPUT
+
+    - name: Run acorn sync
+      shell: bash
+      if: inputs.mode == 'sync'
+      run: |
+        acorn sync --dir "${{ inputs.work-dir }}" --force
+        echo "status=synced" >> $GITHUB_OUTPUT
+
+    - name: Run acorn fix
+      shell: bash
+      if: inputs.mode == 'fix'
+      run: |
+        acorn fix --dir "${{ inputs.work-dir }}" --all --force
+        echo "status=fixed" >> $GITHUB_OUTPUT
