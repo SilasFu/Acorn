@@ -12,6 +12,7 @@ from acorn.commands.clean import cmd_clean
 from acorn.commands.doctor import cmd_doctor
 from acorn.commands.docker import cmd_add_ci, cmd_dockerize
 from acorn.commands.fix import cmd_fix
+from acorn.commands.sync import cmd_sync
 from acorn.commands.generate import cmd_generate
 from acorn.commands.marketplace import cmd_install, cmd_search
 from acorn.commands.template_cmd import cmd_add, cmd_init, cmd_list, cmd_remove, cmd_validate, cmd_validate_ai_context
@@ -93,6 +94,10 @@ def build_parser() -> argparse.ArgumentParser:
     g_admin.add_argument("--scan", metavar="PATH", help="扫描模板或项目的安全问题")
     g_admin.add_argument("--config", metavar="FILE", help="指定全局配置文件路径")
 
+    g_sync = parser.add_argument_group("sync options")
+    g_sync.add_argument("--sync", action="store_true", help="同步 AI 上下文文件 / Sync AI context files")
+    g_sync.add_argument("--sync-hook", action="store_true", dest="sync_hook", help="安装 pre-commit hook / Install pre-commit hook")
+
     g_fix = parser.add_argument_group("fix options")
     g_fix.add_argument("--fix", action="store_true", help="修复项目配置（子命令模式）")
     g_fix.add_argument("--fix-dockerfile", action="store_true", dest="fix_dockerfile", help="生成 Dockerfile")
@@ -143,6 +148,8 @@ def main() -> int:
         sys.argv = [sys.argv[0], "--wizard"] + sys.argv[2:]
     if len(sys.argv) >= 2 and sys.argv[1] == "fix":
         sys.argv = [sys.argv[0], "--fix"] + sys.argv[2:]
+    if len(sys.argv) >= 2 and sys.argv[1] == "sync":
+        sys.argv = [sys.argv[0], "--sync"] + sys.argv[2:]
 
     parser = build_parser()
     args = parser.parse_args()
@@ -202,6 +209,8 @@ def main() -> int:
     if args.validate:
         return cmd_validate(args.validate)
 
+    if args.sync:
+        return cmd_sync(cwd=Path(args.dir).resolve(), hook_install=args.sync_hook, force=args.force, dry_run=args.dry_run)
     if args.fix:
         return cmd_fix(args)
 

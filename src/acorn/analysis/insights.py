@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from acorn._compat import tomllib
+from acorn.analysis import ast_lite
 
 SOURCE_EXTENSIONS = {".py", ".js", ".ts", ".jsx", ".tsx", ".go", ".rs", ".java", ".rb", ".php", ".c", ".cpp", ".h", ".hpp"}
 IGNORE_DIRS = {
@@ -36,6 +37,15 @@ class ProjectInsights:
     auth_lib: str | None = None
 
     entry_points: list[str] = field(default_factory=list)
+
+    import_style: str = "unknown"
+    module_system: str = "unknown"
+    naming_convention: str = "unknown"
+    state_management: str | None = None
+    styling_approach: str | None = None
+    api_style: str | None = None
+    architecture_pattern: str | None = None
+    directory_purposes: dict[str, str] = field(default_factory=dict)
 
 
 _JS_FRAMEWORKS: dict[str, tuple[str | None, str | None, str | None]] = {
@@ -332,6 +342,16 @@ def analyze(dir_path: Path | str) -> ProjectInsights:
 
     _analyze_src_structure(ins, dir_path)
     _find_entry_points(ins, dir_path)
+
+    if ins.language == "node":
+        ins.import_style = ast_lite.detect_import_style(dir_path)
+        ins.module_system = ast_lite.detect_module_system(dir_path)
+        ins.naming_convention = ast_lite.detect_naming_convention(dir_path)
+        ins.state_management = ast_lite.detect_state_management(dir_path)
+        ins.styling_approach = ast_lite.detect_styling_approach(dir_path)
+        ins.api_style = ast_lite.detect_api_style(dir_path)
+        ins.architecture_pattern = ast_lite.detect_architecture_pattern(dir_path, "node")
+        ins.directory_purposes = ast_lite.detect_directory_purpose(ins.src_structure, "node")
 
     return ins
 
