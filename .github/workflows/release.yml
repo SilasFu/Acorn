@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build binary (${{ matrix.os }})
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: acorn-linux-amd64
+          - os: macos-latest
+            artifact_name: acorn-macos-arm64
+          - os: macos-13
+            artifact_name: acorn-macos-amd64
+          - os: windows-latest
+            artifact_name: acorn-windows-amd64.exe
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install -e ".[network,advanced]"
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller --onefile --name acorn \
+            --add-data "src/acorn/templates:acorn/templates" \
+            --add-data "src/acorn/detectors:acorn/detectors" \
+            --add-data "src/acorn/locales:acorn/locales" \
+            src/acorn/cli.py
+      - name: Smoke test
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == windows-latest ]]; then
+            ./dist/acorn.exe --help
+          else
+            ./dist/acorn --help
+          fi
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: dist/acorn*
+
+  release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: acorn-*
+          merge-multiple: true
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            acorn-linux-amd64
+            acorn-macos-arm64
+            acorn-macos-amd64
+            acorn-windows-amd64.exe
+          generate_release_notes: true

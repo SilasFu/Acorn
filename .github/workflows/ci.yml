@@ -27,3 +27,24 @@ jobs:
         run: ruff check src/ tests/
       - name: Test with coverage
         run: pytest tests/ --cov=src/acorn --cov-report=term-missing
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install -e ".[network,advanced]"
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller --onefile --name acorn \
+            --add-data "src/acorn/templates:acorn/templates" \
+            --add-data "src/acorn/detectors:acorn/detectors" \
+            --add-data "src/acorn/locales:acorn/locales" \
+            src/acorn/cli.py
+      - name: Smoke test
+        run: ./dist/acorn --help
