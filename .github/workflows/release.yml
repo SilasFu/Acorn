@@ -34,6 +34,7 @@ jobs:
           pip install pyinstaller
           pip install -e ".[network,advanced]"
       - name: Build with PyInstaller
+        shell: bash
         run: |
           pyinstaller --onefile --name acorn \
             --add-data "src/acorn/templates:acorn/templates" \
