@@ -2,6 +2,7 @@
 
 ## [0.3.1] - 2026-05-16
 
+- Fix: reconfigure stdout/stderr to UTF-8 for Windows compatibility. / 修复：Windows 下 stdout/stderr 重配置为 UTF-8。
 - CI fix: use bash shell for PyInstaller on Windows. / CI 修复：Windows 构建使用 bash shell。
 - CI fix: match any version in Homebrew formula sed. / CI 修复：Homebrew formula 版本替换支持正则。
 - Homebrew formula: 0.2.0 → 0.1.0 placeholder for CI replacement. / Homebrew formula 占位符版本统一。
