@@ -2,7 +2,7 @@ class Acorn < Formula
   desc "AI coding environment optimizer — auto-detect, diagnose, and fix your project setup"
   homepage "https://github.com/SilasFu/Acorn"
   license "MIT"
-  version "0.2.0"
+  version "0.1.0"
 
   on_macos do
     if Hardware::CPU.arm?
