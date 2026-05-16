@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "acorn"
-version = "0.3.0"
+version = "0.3.1"
 description = "智能项目初始化工具 - 自动检测项目类型、匹配模板、生成配置"
 readme = "README.md"
 license = "MIT"
