@@ -70,10 +70,11 @@ def diagnose(
         exists = full_path.exists()
         status = exists
 
+        safe_path = rule.rel_path.lstrip(".").replace(".", "_").replace("/", "_")
         if exists:
-            message_key = f"check_{rule.rel_path}_present"
+            message_key = f"check_{safe_path}_present"
         else:
-            message_key = f"check_{rule.rel_path}_absent"
+            message_key = f"check_{safe_path}_absent"
 
         checks.append(
             HealthCheck(

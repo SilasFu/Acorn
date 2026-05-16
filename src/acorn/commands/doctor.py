@@ -13,20 +13,20 @@ from acorn.format import EXIT_SUCCESS, color, confirm_or_exit
 from acorn.i18n import detect_language, set_language, t
 
 
-def _msg(key: str, fallback: str = "") -> str:
-    val = t(key)
+def _msg(key: str, fallback: str = "", **kwargs: str) -> str:
+    val = t(key, **kwargs)
     return val if val != key else fallback
 
 
 def _display_report(report) -> None:
     name = report.project_path.name
-    title = _msg("messages.doctor_title", f"Project Report — {name}")
+    title = _msg("messages.doctor_title", f"Project Report — {name}", project=name)
     print(f"\n{color(title, 'bold')}")
 
     type_str = f"{report.project_type}"
     if report.framework:
         type_str += f" ({report.framework})"
-    print(f"  {_msg('messages.project_type', 'Type')}: {type_str} ({_msg('messages.confidence', 'confidence')}: {report.confidence:.0%})")
+    print(f"  {type_str} ({_msg('messages.confidence', 'confidence')}: {report.confidence:.0%})")
 
     sections = [
         (CheckCategory.AI_READINESS, "messages.ai_readiness", "🤖"),
@@ -41,7 +41,7 @@ def _display_report(report) -> None:
         print(f"\n  {icon} {_msg(key, key)}")
         for c in cat_checks:
             mark = color("✓", "green") if c.status else color("✗", "red")
-            label = f"check_{c.name}_present" if c.status else f"check_{c.name}_absent"
+            label = c.message_key
             msg = _msg(f"messages.{label}", "")
             print(f"    {mark} {c.name:<30} {msg}")
             if not c.status and c.fix_target and c.auto_fixable:

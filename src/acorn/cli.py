@@ -218,7 +218,7 @@ def main() -> int:
     if args.validate:
         return cmd_validate(args.validate)
 
-    if args.sync:
+    if args.sync or args.sync_hook:
         return cmd_sync(cwd=Path(args.dir).resolve(), hook_install=args.sync_hook, force=args.force, dry_run=args.dry_run)
     if args.fix or any(getattr(args, attr, False) for attr in _FIX_ATTRS):
         return cmd_fix(args)
