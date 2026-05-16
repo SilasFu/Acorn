@@ -6,6 +6,12 @@ import sys
 from pathlib import Path
 
 from acorn import __version__
+
+_FIX_ATTRS = [
+    "fix_dockerfile", "fix_dockerignore", "fix_gitignore",
+    "fix_cursorrules", "fix_claude_md", "fix_copilot",
+    "fix_ai", "fix_all",
+]
 from acorn.commands.admin import cmd_check_update, cmd_completion, cmd_export, cmd_import
 from acorn.commands.analyze_cmd import cmd_analyze
 from acorn.commands.clean import cmd_clean
@@ -214,7 +220,7 @@ def main() -> int:
 
     if args.sync:
         return cmd_sync(cwd=Path(args.dir).resolve(), hook_install=args.sync_hook, force=args.force, dry_run=args.dry_run)
-    if args.fix:
+    if args.fix or any(getattr(args, attr, False) for attr in _FIX_ATTRS):
         return cmd_fix(args)
 
     if args.scan:

@@ -11,6 +11,11 @@ PYPI_API = "https://pypi.org/pypi/acorn/json"
 TIMEOUT = 5
 
 
+def _parse_version(v: str) -> tuple[int, ...]:
+    parts = v.replace("-", ".").split(".")
+    return tuple(int(p) for p in parts if p.isdigit())
+
+
 def check_pypi_version(offline: bool = False) -> dict[str, Any] | None:
     if offline:
         return None
@@ -29,6 +34,6 @@ def check_pypi_version(offline: bool = False) -> dict[str, Any] | None:
     return {
         "current": __version__,
         "latest": latest,
-        "upgrade_available": latest != __version__,
+        "upgrade_available": _parse_version(latest) > _parse_version(__version__),
         "url": "https://pypi.org/project/acorn/",
     }
